@@ -28,6 +28,8 @@ export const truncateText = (
 export const copyToClipboard = (content: string): Promise<void> =>
   navigator.clipboard.writeText(content);
 
+
+// Reference: https://gist.github.com/omrumbakitemiz/3d8b7d713b84cb2bd2e572be19fbe698
 export function generateRandomId(): string {
   let d = new Date().getTime();
   let d2 =
