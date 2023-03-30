@@ -5,7 +5,7 @@ import { writable } from 'svelte/store'
 export const notificationStore = writable<INotification[]>([])
 
 export function showNotification(notification: Omit<INotification, 'id'>): string {
-    const id = crypto.randomUUID()
+    const id = Math.random().toString(36).slice(2)
     const duration = notification.duration ?? NOTIFICATION_TIMEOUT_DEFAULT
 
     notificationStore.update((notifications) => [...notifications, { ...notification, id, duration }])
