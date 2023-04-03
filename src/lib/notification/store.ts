@@ -1,7 +1,9 @@
-import type { INotification } from './interfaces'
-import { NOTIFICATION_TIMEOUT_DEFAULT, NOTIFICATION_TIMEOUT_NEVER } from './constants'
 import { writable } from 'svelte/store'
-import { generateRandomId } from '../common/utils'
+
+import { generateRandomId } from '$lib/common'
+
+import { NOTIFICATION_TIMEOUT_DEFAULT, NOTIFICATION_TIMEOUT_NEVER } from './constants'
+import type { INotification } from './interfaces'
 
 export const notificationStore = writable<INotification[]>([])
 
