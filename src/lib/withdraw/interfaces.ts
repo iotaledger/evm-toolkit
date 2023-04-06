@@ -71,7 +71,7 @@ export interface WithdrawFormInput {
   /**
    * [Form] Any NFT to send.
    */
-  nftIDToSend?: string;
+  nftIDToSend: string | null;
 }
 
 export interface INativeTokenWithdraw {

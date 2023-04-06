@@ -1,10 +1,16 @@
 <script lang="ts">
-  export let options: { label: string; id: number }[] = [];
-  export let value: number | string = 0;
+  export let options: { label: string; id: number | string | null; }[] = [];
+  export let value: number | string | null = 0;
+  export let withEmptyItem: boolean = false;
+  export let emptyItemText: string = "None";
 </script>
 
 <select-component>
   <select bind:value>
+    {#if withEmptyItem}
+      <option value={null}>{emptyItemText}</option>
+    {/if}
+
     {#each options as { label, id }}
       <option value={id}>{label}</option>
     {/each}
