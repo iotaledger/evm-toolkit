@@ -36,7 +36,7 @@
   $: isValidAddress = formInput.receiverAddress.length == Bech32AddressLength;
   $: canWithdraw =
     $withdrawStateStore.availableBaseTokens > 0 &&
-    formInput.baseTokensToSend > 0 &&
+    isSomethingSelectedToWithdraw &&
     isValidAddress;
   $: canWithdrawEverything = isValidAddress;
   $: canSetAmountToWithdraw =
@@ -46,7 +46,12 @@
     : false;
 
   $: $withdrawStateStore, updateFormInput();
-  
+
+  $: isSomethingSelectedToWithdraw =
+    formInput.baseTokensToSend > 0 &&
+    (formInput.nftIDToSend?.length > 0 ||
+      Object.values(formInput.nativeTokensToSend)?.some(amount => amount > 0));
+
   function updateFormInput() {
     if (formInput.baseTokensToSend > $withdrawStateStore.availableBaseTokens) {
       formInput.baseTokensToSend = 0;
