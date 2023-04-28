@@ -4,7 +4,7 @@ export const NETWORKS: INetwork[] = [
   {
     "id": 0,
     "text": "ShimmerEVM Testnet",
-    "apiEndpoint": "https://api.hornet.sc.testnet.shimmer.network",
+    "apiEndpoint": "https://api.testnet.shimmer.network",
     "faucetEndpoint": "https://faucet.testnet.shimmer.network",
     "chainAddress": "rms1prwgvvw472spqusqeufvlmp8xdpyxtrnmvt26jnuk6sxdcq2hk8scku26h7",
     "chainID": 1071,
