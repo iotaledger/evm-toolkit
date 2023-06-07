@@ -22,7 +22,7 @@
     receiverAddress: '',
     baseTokensToSend: 0,
     nativeTokensToSend: {},
-    nftIDToSend: undefined,
+    nftIDToSend: null,
   };
 
   const BASE_TOKEN_DECIMALS = 6;
@@ -46,7 +46,7 @@
     : false;
 
   $: $withdrawStateStore, updateFormInput();
-  
+
   function updateFormInput() {
     if (formInput.baseTokensToSend > $withdrawStateStore.availableBaseTokens) {
       formInput.baseTokensToSend = 0;
@@ -169,7 +169,7 @@
   const formatAvailableNFTsForSelectTag = (nfts: INFT[]) => {
     return nfts.map(nft => {
       return {
-        id: Number(nft.id),
+        id: nft.id,
         label: nft?.metadata?.name
           ? truncateText(nft?.metadata?.name, 4, 4) + '  ' + nft?.id
           : nft?.id,
@@ -226,6 +226,7 @@
         <div class="mb-2">NFTs</div>
         <Select
           bind:value={formInput.nftIDToSend}
+          withEmptyItem={true}
           options={formatAvailableNFTsForSelectTag(
             $withdrawStateStore.availableNFTs,
           )}
