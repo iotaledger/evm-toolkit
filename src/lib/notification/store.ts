@@ -1,11 +1,14 @@
-import type { INotification } from './interfaces'
-import { NOTIFICATION_TIMEOUT_DEFAULT, NOTIFICATION_TIMEOUT_NEVER } from './constants'
 import { writable } from 'svelte/store'
+
+import { generateRandomId } from '$lib/common'
+
+import { NOTIFICATION_TIMEOUT_DEFAULT, NOTIFICATION_TIMEOUT_NEVER } from './constants'
+import type { INotification } from './interfaces'
 
 export const notificationStore = writable<INotification[]>([])
 
 export function showNotification(notification: Omit<INotification, 'id'>): string {
-    const id = crypto.randomUUID()
+    const id = generateRandomId()
     const duration = notification.duration ?? NOTIFICATION_TIMEOUT_DEFAULT
 
     notificationStore.update((notifications) => [...notifications, { ...notification, id, duration }])
