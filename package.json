@@ -53,7 +53,7 @@
     "sass": "^1.59.2",
     "set-interval-async": "^3.0.3",
     "stream-browserify": "^3.0.0",
-    "svelte-web3": "^3.4.3",
+    "svelte-web3": "3.4.3",
     "tailwindcss": "^3.2.7",
     "util": "^0.12.5"
   }
