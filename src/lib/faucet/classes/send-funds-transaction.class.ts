@@ -62,13 +62,8 @@ export class SendFundsTransaction {
     metadata.writeBytes(evmAddressBuffer.buffer); //  Write value (bytes(agentID))
 
     /* Write allowance */
-    metadata.writeUInt8(0); // Has allowance (255 if no allowance is set)
+    metadata.writeUInt8(128); // 0x80 flag meanting there are native tokens in the allowance
     metadata.writeUInt64LE(amount - gas); // IOTA amount to send
-    metadata.writeUInt16LE(2); // Length of native assets data (we send no native assets, in this case we need to write two 0 bytes, and therefore provide the length of 2)
-    metadata.writeUInt8(0); // Part of the empty native assets
-    metadata.writeUInt8(0); // Part of the empty native assets
-    metadata.writeUInt16LE(0); // Amount of NFTs
-
     return metadata.buffer;
   }
 

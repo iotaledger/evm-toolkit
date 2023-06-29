@@ -6,8 +6,8 @@ export const NETWORKS: INetwork[] = [
     "text": "ShimmerEVM Testnet",
     "apiEndpoint": "https://evm-toolkit-api.testnet.shimmer.network",
     "faucetEndpoint": "https://faucet.testnet.shimmer.network",
-    "chainAddress": "rms1prwgvvw472spqusqeufvlmp8xdpyxtrnmvt26jnuk6sxdcq2hk8scku26h7",
-    "chainID": 1071,
+    "chainAddress": "rms1pr75wa5xuepg2hew44vnr28wz5h6n6x99zptk2g68sp2wuu2karywgrztx3",
+    "chainID": 1072,
     "blockExplorer": "https://explorer.evm.testnet.shimmer.network",
     "networkUrl": "https://json-rpc.evm.testnet.shimmer.network"
   },
