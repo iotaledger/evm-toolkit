@@ -7,7 +7,7 @@ export const NETWORKS: INetwork[] = [
     "apiEndpoint": "https://evm-toolkit-api.testnet.shimmer.network",
     "faucetEndpoint": "https://faucet.testnet.shimmer.network",
     "chainAddress": "rms1prwgvvw472spqusqeufvlmp8xdpyxtrnmvt26jnuk6sxdcq2hk8scku26h7",
-    "chainID": 1071,
+    "chainID": 1072,
     "blockExplorer": "https://explorer.evm.testnet.shimmer.network",
     "networkUrl": "https://json-rpc.evm.testnet.shimmer.network"
   },
