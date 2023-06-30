@@ -27,7 +27,7 @@ export class SimpleBufferCursor {
     return value;
   }
 
-  readUInt64LE(): bigint {
+  readUInt64LE(): BigInt {
     const value = this._buffer.readBigUInt64LE(this._traverse);
     this._traverse += 8;
 
@@ -79,12 +79,6 @@ export class SimpleBufferCursor {
     this._buffer = Buffer.concat([this._buffer, nBuffer]);
   }
 
-  writeUInt64LE(value: bigint): void {
-    const nBuffer = Buffer.alloc(8);
-    nBuffer.writeBigUInt64LE(value, 0);
-
-    this._buffer = Buffer.concat([this._buffer, nBuffer]);
-  }
 
   writeUInt16LE(value: number): void {
     const nBuffer = Buffer.alloc(2);
@@ -101,5 +95,43 @@ export class SimpleBufferCursor {
 
   writeBytes(bytes: Buffer): void {
     this._buffer = Buffer.concat([this._buffer, bytes]);
+  }
+
+  writeUInt64SpecialEncoding(value: BigInt): void {
+    this.writeBytes(size64Encode(value.valueOf()))
+  }
+
+  writeUInt32SpecialEncoding(value: number): void {
+    this.writeBytes(size64Encode(BigInt(value)))
+  }
+
+}
+
+function shiftRight(s: bigint, n: bigint): bigint {
+  return s / (BigInt(2) ** n);
+}
+
+// from https://github.com/iotaledger/wasp/blob/12845adea4fc097813a30a061853af4a43407d3c/packages/util/rwutil/convert.go#L113
+function size64Encode(n: bigint): Buffer {
+  if (n < BigInt(0x80)) {
+    return Buffer.from([Number(n)]);
+  } else if (n < BigInt(0x4000)) {
+    return Buffer.from([Number(n | BigInt(0x80)), Number(shiftRight(n, BigInt(7)))]);
+  } else if (n < BigInt(0x20_0000)) {
+    return Buffer.from([Number(n | BigInt(0x80)), Number(shiftRight(n, BigInt(7)) | BigInt(0x80)), Number(shiftRight(n, BigInt(14)))]);
+  } else if (n < BigInt(0x1000_0000)) {
+    return Buffer.from([Number(n | BigInt(0x80)), Number(shiftRight(n, BigInt(7)) | BigInt(0x80)), Number(shiftRight(n, BigInt(14)) | BigInt(0x80)), Number(shiftRight(n, BigInt(21)))]);
+  } else if (n < BigInt(0x8_0000_0000)) {
+    return Buffer.from([Number(n | BigInt(0x80)), Number(shiftRight(n, BigInt(7)) | BigInt(0x80)), Number(shiftRight(n, BigInt(14)) | BigInt(0x80)), Number(shiftRight(n, BigInt(21)) | BigInt(0x80)), Number(shiftRight(n, BigInt(28)))]);
+  } else if (n < BigInt(0x400_0000_0000)) {
+    return Buffer.from([Number(n | BigInt(0x80)), Number(shiftRight(n, BigInt(7)) | BigInt(0x80)), Number(shiftRight(n, BigInt(14)) | BigInt(0x80)), Number(shiftRight(n, BigInt(21)) | BigInt(0x80)), Number(shiftRight(n, BigInt(28)) | BigInt(0x80)), Number(shiftRight(n, BigInt(35)))]);
+  } else if (n < BigInt(0x2_0000_0000_0000)) {
+    return Buffer.from([Number(n | BigInt(0x80)), Number(shiftRight(n, BigInt(7)) | BigInt(0x80)), Number(shiftRight(n, BigInt(14)) | BigInt(0x80)), Number(shiftRight(n, BigInt(21)) | BigInt(0x80)), Number(shiftRight(n, BigInt(28)) | BigInt(0x80)), Number(shiftRight(n, BigInt(35)) | BigInt(0x80)), Number(shiftRight(n, BigInt(42)))]);
+  } else if (n < BigInt(0x100_0000_0000_0000)) {
+    return Buffer.from([Number(n | BigInt(0x80)), Number(shiftRight(n, BigInt(7)) | BigInt(0x80)), Number(shiftRight(n, BigInt(14)) | BigInt(0x80)), Number(shiftRight(n, BigInt(21)) | BigInt(0x80)), Number(shiftRight(n, BigInt(28)) | BigInt(0x80)), Number(shiftRight(n, BigInt(35)) | BigInt(0x80)), Number(shiftRight(n, BigInt(42)) | BigInt(0x80)), Number(shiftRight(n, BigInt(49)))]);
+  } else if (n < BigInt(0x8000_0000_0000_0000)) {
+    return Buffer.from([Number(n | BigInt(0x80)), Number(shiftRight(n, BigInt(7)) | BigInt(0x80)), Number(shiftRight(n, BigInt(14)) | BigInt(0x80)), Number(shiftRight(n, BigInt(21)) | BigInt(0x80)), Number(shiftRight(n, BigInt(28)) | BigInt(0x80)), Number(shiftRight(n, BigInt(35)) | BigInt(0x80)), Number(shiftRight(n, BigInt(42)) | BigInt(0x80)), Number(shiftRight(n, BigInt(49)) | BigInt(0x80)), Number(shiftRight(n, BigInt(56)))]);
+  } else {
+    return Buffer.from([Number(n | BigInt(0x80)), Number(shiftRight(n, BigInt(7)) | BigInt(0x80)), Number(shiftRight(n, BigInt(14)) | BigInt(0x80)), Number(shiftRight(n, BigInt(21)) | BigInt(0x80)), Number(shiftRight(n, BigInt(28)) | BigInt(0x80)), Number(shiftRight(n, BigInt(35)) | BigInt(0x80)), Number(shiftRight(n, BigInt(42)) | BigInt(0x80)), Number(shiftRight(n, BigInt(49)) | BigInt(0x80)), Number(shiftRight(n, BigInt(56)) | BigInt(0x80)), Number(shiftRight(n, BigInt(63)))]);
   }
 }

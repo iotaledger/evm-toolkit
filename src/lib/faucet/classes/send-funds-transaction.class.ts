@@ -43,7 +43,7 @@ export class SendFundsTransaction {
     metadata.writeUInt32LE(0x0); // nil sender contract
     metadata.writeUInt32LE(0x3c4b5e02); // "accounts"
     metadata.writeUInt32LE(0x23f4e3a1); // "transferAllowanceTo"
-    metadata.writeUInt64LE(gas); // gas
+    metadata.writeUInt64SpecialEncoding(gas); // gas
 
     /* Create evm address buffer */
     const evmAddressBuffer = new SimpleBufferCursor();
@@ -53,17 +53,19 @@ export class SendFundsTransaction {
     ); // EVM address
 
     /* Write length of contract arguments (1) */
-    metadata.writeUInt32LE(1);
+    metadata.writeUInt32SpecialEncoding(1);
 
     // Write evm address (arg1)
-    metadata.writeUInt16LE(1); // Length of key (len(a) == 1)
+    metadata.writeUInt32SpecialEncoding(1);// Length of key (len(a) == 1)
     metadata.writeInt8('a'.charCodeAt(0)); // Write key (a == 'agentID')
-    metadata.writeUInt32LE(evmAddressBuffer.buffer.length); // Length of value (len(agentID) == 21 for evm address)
+    metadata.writeUInt32SpecialEncoding(evmAddressBuffer.buffer.length); // Length of value (len(agentID) == 21 for evm address)
     metadata.writeBytes(evmAddressBuffer.buffer); //  Write value (bytes(agentID))
 
     /* Write allowance */
-    metadata.writeUInt8(128); // 0x80 flag meanting there are native tokens in the allowance
-    metadata.writeUInt64LE(amount - gas); // IOTA amount to send
+    // see https://github.com/iotaledger/wasp/blob/12845adea4fc097813a30a061853af4a43407d3c/packages/isc/assets.go#L348-L356 
+    metadata.writeUInt8(128); // 0x80 flag meaning there are native tokens in the allowance
+    metadata.writeUInt64SpecialEncoding(amount - gas); // IOTA amount to send
+    console.log(metadata.buffer.toString('hex'))
     return metadata.buffer;
   }
 
