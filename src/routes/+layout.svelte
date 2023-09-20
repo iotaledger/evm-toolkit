@@ -15,7 +15,7 @@
         const matchedExistingNetwork = $networks.find(
           _network => _network?.id === network?.id,
         );
-        if (network?.id === 0) {
+        if (network?.id === 0 || !matchedExistingNetwork) {
           return network;
         } else {
           return matchedExistingNetwork;
