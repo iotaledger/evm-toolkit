@@ -11,7 +11,6 @@ export const selectedNetworkId: Writable<number> = persistent(
     0,
 );
 
-// Use derived store as before, but make sure you have called fetchNetworksData() beforehand
 export const selectedNetwork: Readable<INetwork> = derived(
     [networks, selectedNetworkId], ([$networks, $selectedNetworkId]) => {
         if (!$networks?.length || !($selectedNetworkId >= 0)) {
