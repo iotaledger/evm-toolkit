@@ -45,14 +45,14 @@ export class ISCMagic {
   public async getNativeTokens(nodeClient: SingleNodeClient, indexerClient: IndexerPluginClient, account: string) {
     const accountsCoreContract = hNameFromString('accounts');
     const getBalanceFunc = hNameFromString('balance');
-    const agentID = evmAddressToAgentID(account);
+    const agentID = await evmAddressToAgentID(account);
 
     const parameters = getBalanceParameters(agentID);
 
     const nativeTokenResult = await this.contract.methods
       .callView(accountsCoreContract, getBalanceFunc, parameters)
       .call();
-      
+
 
     const nativeTokens: INativeToken[] = [];
 
@@ -80,7 +80,7 @@ export class ISCMagic {
   public async getNFTs(nodeClient: SingleNodeClient, indexerClient: IndexerPluginClient, account: string) {
     const accountsCoreContract = hNameFromString('accounts');
     const getAccountNFTsFunc = hNameFromString('accountNFTs');
-    const agentID = evmAddressToAgentID(account);
+    const agentID = await evmAddressToAgentID(account);
 
     let parameters = getBalanceParameters(agentID);
 
