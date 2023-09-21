@@ -3,25 +3,26 @@
 
   import { Navbar, NotificationManager, PopupManager } from '$components';
 
-  import { networks, NETWORKS } from '$lib/evm-toolkit';
+  import { fetchConfiguredNetworks, networks } from '$lib/evm-toolkit';
 
   import '../app.scss';
 
-  onMount(() => {
-    // Initialize networks updating not-configurable data
-    networks?.update($networks => {
-      const updatedNetworks = $networks.map(network => {
-        const matchedDefaultNetwork = NETWORKS.find(
+  onMount(async () => {
+    const initialNetworks = await fetchConfiguredNetworks();
+    let updatedNetworks = initialNetworks;
+    if ($networks?.length) {
+      updatedNetworks = initialNetworks.map(network => {
+        const matchedExistingNetwork = $networks.find(
           _network => _network?.id === network?.id,
         );
-        if (network?.id === 0) {
-          return matchedDefaultNetwork;
-        } else {
+        if (network?.id === 0 || !matchedExistingNetwork) {
           return network;
+        } else {
+          return matchedExistingNetwork;
         }
       });
-      return updatedNetworks;
-    });
+    }
+    networks.set(updatedNetworks);
   });
 </script>
 

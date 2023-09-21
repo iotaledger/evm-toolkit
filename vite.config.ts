@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
-import { sveltekit } from '@sveltejs/kit/vite'
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
+import { sveltekit } from '@sveltejs/kit/vite'
+import { defineConfig, searchForWorkspaceRoot } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -26,5 +26,12 @@ export default defineConfig({
         })
       ]
     }
-  }
+  },
+  server: {
+    fs: {
+      // Allow serving files from one level up to the project root
+      // source https://vitejs.dev/config/server-options.html#server-fs-allow
+      allow: ['..'],
+    },
+  },
 })
