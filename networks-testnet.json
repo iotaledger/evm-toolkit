@@ -3,6 +3,7 @@
         "id": 0,
         "text": "ShimmerEVM Testnet",
         "apiEndpoint": "https://evm-toolkit-api.testnet.shimmer.network",
+        "faucetEndpoint": "https://faucet.testnet.shimmer.network",
         "chainAddress": "rms1ppnkvsjctdg53v2x89uzhuxg89s073jmn2nuzcw44tggjy8rzzgzq2rg0qp",
         "chainID": 7779,
         "blockExplorer": "https://explorer.evm.testnet.shimmer.network/",
