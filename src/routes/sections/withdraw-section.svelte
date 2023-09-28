@@ -85,7 +85,7 @@
     try {
       const gasNeeded = await $withdrawStateStore.iscMagic.estimateGas(
         $nodeClient,
-        randomBech32Address('rms'),
+        formInput.receiverAddress,
         baseTokens,
         nativeTokensToSend,
         nftID,
