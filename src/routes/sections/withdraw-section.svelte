@@ -77,7 +77,7 @@
     nativeTokens: { [key: string]: number },
     nftID?: string,
   ) {
-    if (!$withdrawStateStore.iscMagic) {
+    if (!$withdrawStateStore.iscMagic || !formInput.receiverAddress) {
       return (canSetAmountToWithdraw = false);
     }
 
