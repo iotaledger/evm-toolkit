@@ -251,7 +251,10 @@
           bind:value={formInput.baseTokensToSend}
           disabled={!canSetAmountToWithdraw}
           min={storageDeposit}
-          max={$withdrawStateStore.availableBaseTokens}
+          max={Math.max(
+            $withdrawStateStore.availableBaseTokens - storageDeposit,
+            0,
+          )}
           decimals={6}
         />
         {#each $withdrawStateStore.availableNativeTokens as nativeToken}
