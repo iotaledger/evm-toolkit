@@ -42,7 +42,7 @@ export class IotaWallet {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  private getKeyPairFromMnemonic(mnemonic: string): IKeyPair {
+  public static getKeyPairFromMnemonic(mnemonic: string): IKeyPair {
     const baseSeed = Ed25519Seed.fromMnemonic(mnemonic);
 
     const path = generateBip44Address({
@@ -140,7 +140,7 @@ export class IotaWallet {
 
   public async initializeFromMnemonic(mnemonic: string): Promise<void> {
     this.nodeInfo = await this.client.info();
-    this.keyPair = this.getKeyPairFromMnemonic(mnemonic);
+    this.keyPair = IotaWallet.getKeyPairFromMnemonic(mnemonic);
     this.address = new Ed25519Address(this.keyPair.publicKey);
   }
 

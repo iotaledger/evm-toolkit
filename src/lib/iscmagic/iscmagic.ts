@@ -7,7 +7,7 @@ import type { Contract } from 'web3-eth-contract';
 import { NativeTokenIDLength } from '$lib/constants';
 import { getNativeTokenMetaData, type INativeToken } from '$lib/native-token';
 import { getNFTMetadata, type INFT } from '$lib/nft';
-import { gasFee, getBalanceParameters, iscAbi, iscContractAddress, withdrawParameters } from '$lib/withdraw';
+import { getBalanceParameters, iscAbi, iscContractAddress, withdrawParameters } from '$lib/withdraw';
 
 import { evmAddressToAgentID, hNameFromString } from './utils';
 
@@ -102,17 +102,34 @@ export class ISCMagic {
     return availableNFTs;
   }
 
-  public async withdraw(nodeClient: SingleNodeClient, receiverAddress: string, baseTokens: number, nativeTokens: INativeToken[], nftID?: string) {
+  public async estimateGas(nodeClient: SingleNodeClient, receiverAddress: string, baseTokens: number, nativeTokens: INativeToken[], nftID?: string) {
     const parameters = await withdrawParameters(
       nodeClient,
       receiverAddress,
-      gasFee,
       baseTokens,
       nativeTokens,
       nftID,
     );
 
-    let result = await this.contract.methods.send(...parameters).send();
+    const estimation = await this.contract.methods.send(...parameters).estimateGas();
+
+    return estimation;
+  }
+
+  public async withdraw(nodeClient: SingleNodeClient, receiverAddress: string, baseTokens: number, nativeTokens: INativeToken[], nftID?: string) {
+    const parameters = await withdrawParameters(
+      nodeClient,
+      receiverAddress,
+      baseTokens,
+      nativeTokens,
+      nftID,
+    );
+
+    const estimation = await this.estimateGas(nodeClient, receiverAddress, baseTokens, nativeTokens, nftID);
+
+    let result = await this.contract.methods.send(...parameters).send({
+      gas: estimation,
+    });
 
     return result as IWithdrawResponse;
   }

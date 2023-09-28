@@ -7,9 +7,11 @@
   export let label: string = '';
   export let valid: boolean = true;
 
+  let minValueFormatted = 0;
   let maxValueFormatted = 0;
   let valueFormatted = 0;
 
+  $: minValueFormatted = min / 10 ** decimals;
   $: maxValueFormatted = max / 10 ** decimals;
   $: valid = value >= min && value <= max;
 
@@ -46,7 +48,7 @@
     {disabled}
   />
   <div class="w-full flex justify-between">
-    <small>Min: {min}</small>
+    <small>Min: {minValueFormatted}</small>
     <small>Max: {maxValueFormatted}</small>
   </div>
 </div>
@@ -62,7 +64,7 @@
     &.error {
       @apply text-red-500;
     }
-    
+
     &:disabled {
       @apply pointer-events-none;
       @apply opacity-50;
