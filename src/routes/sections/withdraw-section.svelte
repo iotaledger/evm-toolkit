@@ -13,14 +13,15 @@
   import type { WithdrawFormInput } from '$lib/withdraw';
   import {
     connectToWallet,
-    gasFee,
     pollBalance,
+    randomBech32Address,
+    storageDeposit,
     withdrawStateStore,
   } from '$lib/withdraw';
 
   const formInput: WithdrawFormInput = {
     receiverAddress: '',
-    baseTokensToSend: 0,
+    baseTokensToSend: storageDeposit,
     nativeTokensToSend: {},
     nftIDToSend: null,
   };
@@ -28,7 +29,9 @@
   const BASE_TOKEN_DECIMALS = 6;
 
   let isWithdrawing: boolean = false;
+  let canSetAmountToWithdraw = true;
 
+  $: updateCanWithdraw($withdrawStateStore.availableBaseTokens, {}, null);
   $: formattedBalance = (
     $withdrawStateStore.availableBaseTokens /
     10 ** BASE_TOKEN_DECIMALS
@@ -39,8 +42,6 @@
     formInput.baseTokensToSend > 0 &&
     isValidAddress;
   $: canWithdrawEverything = isValidAddress;
-  $: canSetAmountToWithdraw =
-    $withdrawStateStore.availableBaseTokens > gasFee + 1;
   $: $withdrawStateStore.isMetamaskConnected = window.ethereum
     ? window.ethereum.isConnected()
     : false;
@@ -68,6 +69,33 @@
       if (typeof formInput.nativeTokensToSend[nativeToken.id] == 'undefined') {
         formInput.nativeTokensToSend[nativeToken.id] = 0;
       }
+    }
+  }
+
+  async function updateCanWithdraw(
+    baseTokens: number,
+    nativeTokens: { [key: string]: number },
+    nftID?: string,
+  ) {
+    if (!$withdrawStateStore.iscMagic || !formInput.receiverAddress) {
+      return (canSetAmountToWithdraw = false);
+    }
+
+    const nativeTokensToSend = mapNativeToken(nativeTokens);
+    try {
+      const gasNeeded = await $withdrawStateStore.iscMagic.estimateGas(
+        $nodeClient,
+        formInput.receiverAddress,
+        baseTokens,
+        nativeTokensToSend,
+        nftID,
+      );
+
+      canSetAmountToWithdraw =
+        $withdrawStateStore.availableBaseTokens > Number(gasNeeded) + 1;
+    } catch (ex) {
+      console.log(ex);
+      return (canSetAmountToWithdraw = false);
     }
   }
 
@@ -122,11 +150,11 @@
     isWithdrawing = false;
   }
 
-  async function onWithdrawClick() {
+  function mapNativeToken(nativeTokens: { [key: string]: number }) {
     const nativeTokensToSend: INativeToken[] = [];
 
-    for (const tokenID of Object.keys(formInput.nativeTokensToSend)) {
-      const amount = formInput.nativeTokensToSend[tokenID];
+    for (const tokenID of Object.keys(nativeTokens)) {
+      const amount = nativeTokens[tokenID];
 
       if (amount > 0) {
         nativeTokensToSend.push({
@@ -137,6 +165,12 @@
         });
       }
     }
+
+    return nativeTokensToSend;
+  }
+
+  async function onWithdrawClick() {
+    const nativeTokensToSend = mapNativeToken(formInput.nativeTokensToSend);
 
     await withdraw(
       formInput.baseTokensToSend,
@@ -153,7 +187,15 @@
     try {
       for (let nft of $withdrawStateStore.availableNFTs.reverse()) {
         await pollBalance();
-        await withdraw(gasFee * 1000, [], nft.id);
+        const estimate = await $withdrawStateStore.iscMagic.estimateGas(
+          $nodeClient,
+          formInput.receiverAddress,
+          10,
+          [],
+          nft.id,
+        );
+
+        await withdraw(estimate + 10, [], nft.id);
         await sleep(5 * 1000);
       }
 
@@ -208,7 +250,11 @@
           label="SMR Token:"
           bind:value={formInput.baseTokensToSend}
           disabled={!canSetAmountToWithdraw}
-          max={$withdrawStateStore.availableBaseTokens}
+          min={storageDeposit}
+          max={Math.max(
+            $withdrawStateStore.availableBaseTokens - storageDeposit,
+            0,
+          )}
           decimals={6}
         />
         {#each $withdrawStateStore.availableNativeTokens as nativeToken}
@@ -238,13 +284,6 @@
       onClick={onWithdrawClick}
       disabled={!canWithdraw}
       busy={isWithdrawing}
-      stretch
-    />
-    <Button
-      danger
-      title="Withdraw everything at once"
-      onClick={onWithdrawEverythingClick}
-      disabled={!canWithdrawEverything || isWithdrawing}
       stretch
     />
   {/if}

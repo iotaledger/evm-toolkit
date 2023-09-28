@@ -1,12 +1,23 @@
-import type { SingleNodeClient } from '@iota/iota.js';
+import type { IEd25519Address, SingleNodeClient } from '@iota/iota.js';
 import {
   Bech32Helper,
   type IAliasAddress,
-  type IEd25519Address,
+  Ed25519Seed,
+  Ed25519Address,
+  ED25519_ADDRESS_TYPE,
 } from '@iota/iota.js';
 import { Converter } from '@iota/util.js';
-
+import { Bip32Path, Bip39 } from "@iota/crypto.js";
 import type { INativeToken } from '$lib/native-token';
+import { IotaWallet } from '$lib/faucet';
+
+export function randomBech32Address(bech32Hrp: string) {
+  const randomMnemonic = Bip39.randomMnemonic();
+  const keyPair = IotaWallet.getKeyPairFromMnemonic(randomMnemonic);
+  const address = new Ed25519Address(keyPair.publicKey);
+  return Bech32Helper.toBech32(ED25519_ADDRESS_TYPE, address.toAddress(), bech32Hrp)
+}
+
 
 export function getBalanceParameters(agentID: Uint8Array) {
   return {
@@ -22,7 +33,6 @@ export function getBalanceParameters(agentID: Uint8Array) {
 export async function withdrawParameters(
   nodeClient: SingleNodeClient,
   receiverAddressBech32: string,
-  gasFee: number,
   baseTokensToWithdraw: number,
   nativeTokens: INativeToken[],
   nftID?: string,
@@ -54,7 +64,7 @@ export async function withdrawParameters(
     },
     {
       // Fungible Tokens
-      baseTokens: baseTokensToWithdraw - gasFee,
+      baseTokens: baseTokensToWithdraw,
       nativeTokens: nativeTokenTuple,
       nfts: nftIDParam,
     },
