@@ -283,13 +283,6 @@
       busy={isWithdrawing}
       stretch
     />
-    <Button
-      danger
-      title="Withdraw everything at once"
-      onClick={onWithdrawEverythingClick}
-      disabled={!canWithdrawEverything || isWithdrawing}
-      stretch
-    />
   {/if}
 </withdraw-component>
 

@@ -1,4 +1,4 @@
-import type { SingleNodeClient } from '@iota/iota.js';
+import type { IEd25519Address, SingleNodeClient } from '@iota/iota.js';
 import {
   Bech32Helper,
   type IAliasAddress,
