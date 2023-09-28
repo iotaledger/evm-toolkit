@@ -1,0 +1,22 @@
+[
+    {
+        "id": 0,
+        "text": "ShimmerEVM Testnet",
+        "apiEndpoint": "https://evm-toolkit-api.testnet.shimmer.network",
+        "faucetEndpoint": "https://faucet.testnet.shimmer.network",
+        "chainAddress": "rms1ppnkvsjctdg53v2x89uzhuxg89s073jmn2nuzcw44tggjy8rzzgzq2rg0qp",
+        "chainID": 7779,
+        "blockExplorer": "https://explorer.evm.testnet.shimmer.network/",
+        "networkUrl": "https://7-teamnet.chrysalis2.com/wasp/api/v1/chains/rms1ppnkvsjctdg53v2x89uzhuxg89s073jmn2nuzcw44tggjy8rzzgzq2rg0qp/evm"
+    },
+    {
+        "id": 1,
+        "text": "Custom Network",
+        "apiEndpoint": "http://localhost:14265",
+        "faucetEndpoint": "http://localhost:8091",
+        "chainAddress": "tst1pz0kc4urqxf4vh6c556gnr6uwmkwz5ye98vucakgafyneed4gft322s3gf0",
+        "chainID": 1074,
+        "blockExplorer": "",
+        "networkUrl": ""
+    }
+]

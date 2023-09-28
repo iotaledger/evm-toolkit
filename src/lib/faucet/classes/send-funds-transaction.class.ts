@@ -24,6 +24,9 @@ import { Converter, WriteStream } from '@iota/util.js';
 import type { IotaWallet } from './';
 // eslint-disable-next-line import/no-unresolved
 import { SimpleBufferCursor } from '$lib/simple-buffer-cursor';
+import { evmAddressToAgentID } from '$lib/iscmagic';
+import { nodeClient } from '$lib/evm-toolkit';
+import { get } from 'svelte/store';
 
 export class SendFundsTransaction {
   private wallet: IotaWallet;
@@ -32,7 +35,7 @@ export class SendFundsTransaction {
     this.wallet = client;
   }
 
-  private createSendFundsMetadata(
+  private async createSendFundsMetadata(
     evmAddress: string,
     amount: bigint,
     gas: bigint,
@@ -40,26 +43,22 @@ export class SendFundsTransaction {
     const metadata = new SimpleBufferCursor();
 
     /* Write contract meta data */
-    metadata.writeUInt32LE(0x0); // nil sender contract
+    metadata.writeUInt8(0); // nil sender contract
     metadata.writeUInt32LE(0x3c4b5e02); // "accounts"
     metadata.writeUInt32LE(0x23f4e3a1); // "transferAllowanceTo"
     metadata.writeUInt64SpecialEncoding(gas); // gas
 
-    /* Create evm address buffer */
-    const evmAddressBuffer = new SimpleBufferCursor();
-    evmAddressBuffer.writeInt8(3); // EVM address type (3)
-    evmAddressBuffer.writeUint8Array(
-      Converter.hexToBytes(evmAddress.toLowerCase()),
-    ); // EVM address
-
     /* Write length of contract arguments (1) */
     metadata.writeUInt32SpecialEncoding(1);
+    
+    /* Create evm address buffer */
+    const evmAddressToAgentIdBuffer = await evmAddressToAgentID(evmAddress);
 
     // Write evm address (arg1)
     metadata.writeUInt32SpecialEncoding(1);// Length of key (len(a) == 1)
     metadata.writeInt8('a'.charCodeAt(0)); // Write key (a == 'agentID')
-    metadata.writeUInt32SpecialEncoding(evmAddressBuffer.buffer.length); // Length of value (len(agentID) == 21 for evm address)
-    metadata.writeBytes(evmAddressBuffer.buffer); //  Write value (bytes(agentID))
+    metadata.writeUInt32SpecialEncoding(evmAddressToAgentIdBuffer.length); // Length
+    metadata.writeUint8Array(evmAddressToAgentIdBuffer); //  Write value (bytes(agentID))
 
     /* Write allowance */
     // see https://github.com/iotaledger/wasp/blob/12845adea4fc097813a30a061853af4a43407d3c/packages/isc/assets.go#L348-L356 
@@ -105,7 +104,7 @@ export class SendFundsTransaction {
       throw new Error('Could not fetch output data');
     }
 
-    const metadata = this.createSendFundsMetadata(evmAddress, amount, gas);
+    const metadata = await this.createSendFundsMetadata(evmAddress, amount, gas);
     const metadataHex = Converter.bytesToHex(metadata, true);
 
     const basicOutput: IBasicOutput = {
