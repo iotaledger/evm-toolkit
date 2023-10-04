@@ -240,7 +240,7 @@
       type={InputType.Text}
       label="Receiver address"
       bind:value={formInput.receiverAddress}
-      placeholder="L1 address starting with (rms/tst/...)"
+      placeholder="L1 address starting with (smr)"
       stretch
     />
     <tokens-to-send-wrapper>
