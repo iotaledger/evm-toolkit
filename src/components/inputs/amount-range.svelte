@@ -48,8 +48,8 @@
     {disabled}
   />
   <div class="w-full flex justify-between">
-    <small>Min: {minValueFormatted}</small>
-    <small>Max: {maxValueFormatted}</small>
+    <small>Min: {minValueFormatted.toFixed(6)}</small>
+    <small>Max: {maxValueFormatted.toFixed(6)}</small>
   </div>
 </div>
 
