@@ -2,13 +2,18 @@
   import { Box, Tabs } from '$components';
   import { selectedNetwork } from '$lib/evm-toolkit';
   import { onMount } from 'svelte';
-  import { FaucetSection, WithdrawSection } from './sections';
+  import { FaucetSection, WithdrawSection, WrapSection } from './sections';
 
   const EVM_TABS = [
     {
       label: 'Withdraw',
       value: 1,
       component: WithdrawSection,
+    },
+    {
+      label: 'Wrap',
+      value: 2,
+      component: WrapSection,
     },
   ];
   const TESTNET_TABS = [
@@ -19,7 +24,13 @@
     },
     {
       label: 'Withdraw',
+      value: 2,
       component: WithdrawSection,
+    },
+    {
+      label: 'Wrap',
+      value: 3,
+      component: WrapSection,
     },
   ];
 

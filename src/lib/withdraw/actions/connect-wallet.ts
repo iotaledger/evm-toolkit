@@ -4,6 +4,9 @@ import { get } from 'svelte/store';
 import { ISCMagic } from '$lib/iscmagic';
 import { iscAbi, iscContractAddress } from '$lib/withdraw';
 
+import { wSMR } from '$lib/wsmr';
+import { wSMRAbi, wSMRContractAddress } from '$lib/wsmr';
+
 import { addSelectedNetworkToMetamask, subscribeBalance } from '.';
 import { updateWithdrawStateStore, withdrawStateStore } from '../stores';
 
@@ -11,7 +14,6 @@ export async function connectToWallet() {
   updateWithdrawStateStore({ isLoading: true });
 
   try {
-
     await defaultEvmStores.setProvider();
 
     await addSelectedNetworkToMetamask();
@@ -28,6 +30,15 @@ export async function connectToWallet() {
 
     const iscMagic = new ISCMagic(get(withdrawStateStore)?.contract);
     updateWithdrawStateStore({ iscMagic });
+
+    const contractWSMR = new EthContract(wSMRAbi, wSMRContractAddress, {
+      from: get(selectedAccount),
+    });
+
+    updateWithdrawStateStore({ contractWSMR });
+
+    const wsmrContractObj = new wSMR(get(withdrawStateStore)?.contractWSMR);
+    updateWithdrawStateStore({ wsmrContractObj });
 
     await subscribeBalance();
   } catch (ex) {

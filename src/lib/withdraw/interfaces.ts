@@ -2,6 +2,7 @@ import type { SetIntervalAsyncTimer } from 'set-interval-async';
 import type { Contract } from 'web3-eth-contract';
 
 import type { ISCMagic } from '$lib/iscmagic';
+import type { WSMR } from '$lib/wsmr';
 import type { INativeToken } from '$lib/native-token';
 import type { INFT } from '$lib/nft';
 
@@ -27,9 +28,19 @@ export interface WithdrawState {
   contract: Contract;
 
   /**
+   * The reference to the wSMR contract used for contract invocations.
+   */
+  contractWSMR?: Contract;
+
+  /**
    * The ISC Magic connector.
    */
   iscMagic?: ISCMagic;
+
+  /**
+   * The wSMR connector.
+   */
+  wsmrContractObj?: WSMR;
 
   /**
    * The EVM chain ID.
