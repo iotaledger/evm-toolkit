@@ -6,7 +6,7 @@
   import { truncateText } from '$lib/common';
   import { InputType } from '$lib/common/enums';
   import { Bech32AddressLength } from '$lib/constants';
-  import { nodeClient } from '$lib/evm-toolkit';
+  import { nodeClient, selectedNetwork } from '$lib/evm-toolkit';
   import type { INativeToken } from '$lib/native-token';
   import type { INFT } from '$lib/nft';
   import { NotificationType, showNotification } from '$lib/notification';
@@ -47,6 +47,7 @@
     : false;
 
   $: $withdrawStateStore, updateFormInput();
+  $: placeholderHrp = $selectedNetwork?.faucetEndpoint ? 'rms/tst/...' : 'smr';
 
   function updateFormInput() {
     if (formInput.baseTokensToSend > $withdrawStateStore.availableBaseTokens) {
@@ -240,7 +241,7 @@
       type={InputType.Text}
       label="Receiver address"
       bind:value={formInput.receiverAddress}
-      placeholder="L1 address starting with (rms/tst/...)"
+      placeholder="L1 address starting with {placeholderHrp}"
       stretch
     />
     <tokens-to-send-wrapper>
