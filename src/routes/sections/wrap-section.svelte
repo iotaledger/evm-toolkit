@@ -7,7 +7,9 @@
   import {
     connectToWallet,
     withdrawStateStore,
+    addWSMRToMetamask,
   } from '$lib/withdraw';
+    import { GAS_PRICE } from '$lib/wsmr';
 
   type WrapFormInput = {
     smrTokensToWrap: number;
@@ -25,7 +27,7 @@
   let isUnwraping: boolean = false;
   let canSetAmountToWrap = true;
   let canSetAmountToUnwrap = true;
-  let estimatedGas: number = 0;
+  let estimatedTxFee: number = 0;
   let balanceWSMR: number = 0;
 
   $: updateCanWrap($withdrawStateStore.availableBaseTokens);
@@ -57,10 +59,12 @@
     }
 
     try {
-      estimatedGas = await ($withdrawStateStore.wsmrContractObj as any).estimateGasDeposit(0);
-      estimatedGas = Number(estimatedGas) + 500_000;
-      canSetAmountToWrap = $withdrawStateStore.availableBaseTokens > estimatedGas;
+      const estimatedGas = await ($withdrawStateStore.wsmrContractObj as any).estimateGasDeposit(0);
+      estimatedTxFee = +estimatedGas.toString() * GAS_PRICE;
+      estimatedTxFee += 0.01; // to avoid not enough txFee
+      estimatedTxFee *= 10 ** 6; // SMR uses 6 decimals
 
+      canSetAmountToWrap = $withdrawStateStore.availableBaseTokens > estimatedTxFee;
       balanceWSMR = await ($withdrawStateStore.wsmrContractObj as any).balanceOf($selectedAccount);
       balanceWSMR = Number(balanceWSMR);
       balanceWSMR -= 1000000000000; // to avoid exceed the balance due to rounding
@@ -162,15 +166,15 @@
     <info-box>
       <div class="flex flex-col space-y-2">
         <tokens-to-send-wrapper>
-          <div class="mb-2">SMR Tokens to wrap</div>
+          <div class="mb-2">Wrap SMR</div>
           <info-box class="flex flex-col space-y-4 max-h-96 overflow-auto">
             <AmountRangeInput
               label="SMR Token:"
               bind:value={formInput.smrTokensToWrap}
               disabled={!canSetAmountToWrap}
-              min={estimatedGas}
+              min={estimatedTxFee}
               max={Math.max(
-                $withdrawStateStore.availableBaseTokens - estimatedGas,
+                $withdrawStateStore.availableBaseTokens - estimatedTxFee,
                 0,
               )}
               decimals={6}
@@ -180,7 +184,12 @@
       </div>
       <div class="flex flex-col space-y-2">
         <tokens-to-send-wrapper>
-          <div class="mb-2">wSMR Tokens to unwrap</div>
+          <div class="mb-2">
+            Unwrap wSMR {' '} &nbsp;
+            <button on:click={addWSMRToMetamask}>
+              <img src="/metamask-logo.svg" alt="Metamask logo" width="70%" />
+            </button>
+          </div>
           <info-box class="flex flex-col space-y-4 max-h-96 overflow-auto">
             <AmountRangeInput
               label="wSMR Token:"
