@@ -32,12 +32,12 @@
   $: formattedBalanceSMR = (
     $withdrawStateStore.availableBaseTokens /
     10 ** BASE_TOKEN_DECIMALS
-  ).toFixed(2);
+  ).toFixed(6);
   $: canWrap =
     $withdrawStateStore.availableBaseTokens > 0 &&
     formInput.smrTokensToWrap > 0;
   $: canUnwrap =
-    (balanceWSMR - 1000000000000) > 0 &&
+    balanceWSMR > 0 &&
     formInput.wsmrTokensToUnwrap > 0;
   $: $withdrawStateStore.isMetamaskConnected = window.ethereum
     ? window.ethereum.isConnected()
@@ -63,7 +63,8 @@
 
       balanceWSMR = await ($withdrawStateStore.wsmrContractObj as any).balanceOf($selectedAccount);
       balanceWSMR = Number(balanceWSMR);
-      canSetAmountToUnwrap = (balanceWSMR - 1000000000000) > 0;
+      balanceWSMR -= 1000000000000; // to avoid exceed the balance due to rounding
+      canSetAmountToUnwrap = balanceWSMR > 0;
     } catch (ex) {
       console.log('updateCanWrap - Error:', ex);
       canSetAmountToWrap = false;
@@ -94,7 +95,7 @@
       smrTokens > 0 ? isWraping = false : isUnwraping = false;
       showNotification({
         type: NotificationType.Error,
-        message: `Failed to send ${wrapText} request: ${ex.message}`,
+        message: `Failed to send ${wrapText} request: ${ex?.data?.message || ex?.message}`,
         duration: 8000,
       });
       return;
@@ -155,7 +156,7 @@
       </div>
       <div class="flex flex-col space-y-2">
         <info-item-title>wSMR Balance</info-item-title>
-        <info-item-value>{(balanceWSMR / 10 ** wSMR_TOKEN_DECIMALS).toFixed(2)}</info-item-value>
+        <info-item-value>{(balanceWSMR / 10 ** wSMR_TOKEN_DECIMALS).toFixed(6)}</info-item-value>
       </div>
     </info-box>
     <info-box>
@@ -187,7 +188,7 @@
               disabled={!canSetAmountToUnwrap}
               min={0}
               max={Math.max(
-                balanceWSMR - 1000000000000, // to avoid exceed the balance due to rounding
+                balanceWSMR,
                 0,
               )}
               decimals={18}
