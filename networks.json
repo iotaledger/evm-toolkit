@@ -7,7 +7,8 @@
         "chainAddress": "rms1pr75wa5xuepg2hew44vnr28wz5h6n6x99zptk2g68sp2wuu2karywgrztx3",
         "chainID": 1073,
         "blockExplorer": "https://explorer.evm.testnet.shimmer.network",
-        "networkUrl": "https://json-rpc.evm.testnet.shimmer.network"
+        "networkUrl": "https://json-rpc.evm.testnet.shimmer.network",
+        "network": "testnet"
     },
     {
         "id": 1,
@@ -17,6 +18,7 @@
         "chainAddress": "tst1pz0kc4urqxf4vh6c556gnr6uwmkwz5ye98vucakgafyneed4gft322s3gf0",
         "chainID": 1074,
         "blockExplorer": "",
-        "networkUrl": ""
+        "networkUrl": "",
+        "network": "testnet"
     }
 ]

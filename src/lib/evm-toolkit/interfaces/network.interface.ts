@@ -1,3 +1,5 @@
+import type { Network } from "../enums";
+
 export interface INetwork {
     id: number;
     text: string;
@@ -7,4 +9,5 @@ export interface INetwork {
     chainID: number;
     blockExplorer?: string;
     networkUrl?: string;
+    network: Network;
 }
