@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Box, Tabs } from '$components';
-  import { Feature, appConfiguration } from '$lib/evm-toolkit';
+  import { Feature, appConfiguration, selectedNetwork } from '$lib/evm-toolkit';
   import { onMount } from 'svelte';
   import { FaucetSection, WithdrawSection, WrapSection } from './sections';
 
@@ -22,8 +22,10 @@
     },
   ];
 
-  $: activeTabs = APP_TABS.filter(tab =>
-    $appConfiguration?.features?.includes(tab.feature),
+  $: activeTabs = APP_TABS.filter(
+    tab =>
+      $appConfiguration?.features?.includes(tab.feature) ||
+      (tab.feature === Feature.Faucet && $selectedNetwork.faucetEndpoint),
   ).map((tab, index) => ({
     ...tab,
     value: index + 1,
