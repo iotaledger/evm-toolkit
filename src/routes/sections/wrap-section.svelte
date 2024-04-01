@@ -7,7 +7,9 @@
   import {
     connectToWallet,
     withdrawStateStore,
+    addWSMRToMetamask,
   } from '$lib/withdraw';
+    import { GAS_PRICE } from '$lib/wsmr';
 
   type WrapFormInput = {
     smrTokensToWrap: number;
@@ -25,19 +27,19 @@
   let isUnwraping: boolean = false;
   let canSetAmountToWrap = true;
   let canSetAmountToUnwrap = true;
-  let estimatedGas: number = 0;
+  let estimatedTxFee: number = 0;
   let balanceWSMR: number = 0;
 
   $: updateCanWrap($withdrawStateStore.availableBaseTokens);
   $: formattedBalanceSMR = (
     $withdrawStateStore.availableBaseTokens /
     10 ** BASE_TOKEN_DECIMALS
-  ).toFixed(2);
+  ).toFixed(6);
   $: canWrap =
     $withdrawStateStore.availableBaseTokens > 0 &&
     formInput.smrTokensToWrap > 0;
   $: canUnwrap =
-    (balanceWSMR - 1000000000000) > 0 &&
+    balanceWSMR > 0 &&
     formInput.wsmrTokensToUnwrap > 0;
   $: $withdrawStateStore.isMetamaskConnected = window.ethereum
     ? window.ethereum.isConnected()
@@ -57,13 +59,16 @@
     }
 
     try {
-      estimatedGas = await ($withdrawStateStore.wsmrContractObj as any).estimateGasDeposit(0);
-      estimatedGas = Number(estimatedGas) + 500_000;
-      canSetAmountToWrap = $withdrawStateStore.availableBaseTokens > estimatedGas;
+      const estimatedGas = await ($withdrawStateStore.wsmrContractObj as any).estimateGasDeposit(0);
+      estimatedTxFee = +estimatedGas.toString() * GAS_PRICE;
+      estimatedTxFee += 0.01; // to avoid not enough txFee
+      estimatedTxFee *= 10 ** 6; // SMR uses 6 decimals
 
+      canSetAmountToWrap = $withdrawStateStore.availableBaseTokens > estimatedTxFee;
       balanceWSMR = await ($withdrawStateStore.wsmrContractObj as any).balanceOf($selectedAccount);
       balanceWSMR = Number(balanceWSMR);
-      canSetAmountToUnwrap = (balanceWSMR - 1000000000000) > 0;
+      balanceWSMR -= 1000000000000; // to avoid exceed the balance due to rounding
+      canSetAmountToUnwrap = balanceWSMR > 0;
     } catch (ex) {
       console.log('updateCanWrap - Error:', ex);
       canSetAmountToWrap = false;
@@ -94,7 +99,7 @@
       smrTokens > 0 ? isWraping = false : isUnwraping = false;
       showNotification({
         type: NotificationType.Error,
-        message: `Failed to send ${wrapText} request: ${ex.message}`,
+        message: `Failed to send ${wrapText} request: ${ex?.data?.message || ex?.message}`,
         duration: 8000,
       });
       return;
@@ -155,21 +160,21 @@
       </div>
       <div class="flex flex-col space-y-2">
         <info-item-title>wSMR Balance</info-item-title>
-        <info-item-value>{(balanceWSMR / 10 ** wSMR_TOKEN_DECIMALS).toFixed(2)}</info-item-value>
+        <info-item-value>{(balanceWSMR / 10 ** wSMR_TOKEN_DECIMALS).toFixed(6)}</info-item-value>
       </div>
     </info-box>
     <info-box>
       <div class="flex flex-col space-y-2">
         <tokens-to-send-wrapper>
-          <div class="mb-2">SMR Tokens to wrap</div>
+          <div class="mb-2">Wrap SMR</div>
           <info-box class="flex flex-col space-y-4 max-h-96 overflow-auto">
             <AmountRangeInput
               label="SMR Token:"
               bind:value={formInput.smrTokensToWrap}
               disabled={!canSetAmountToWrap}
-              min={estimatedGas}
+              min={estimatedTxFee}
               max={Math.max(
-                $withdrawStateStore.availableBaseTokens - estimatedGas,
+                $withdrawStateStore.availableBaseTokens - estimatedTxFee,
                 0,
               )}
               decimals={6}
@@ -179,7 +184,12 @@
       </div>
       <div class="flex flex-col space-y-2">
         <tokens-to-send-wrapper>
-          <div class="mb-2">wSMR Tokens to unwrap</div>
+          <div class="mb-2">
+            Unwrap wSMR {' '} &nbsp;
+            <button on:click={addWSMRToMetamask}>
+              <img src="/metamask-logo.svg" alt="Metamask logo" width="70%" />
+            </button>
+          </div>
           <info-box class="flex flex-col space-y-4 max-h-96 overflow-auto">
             <AmountRangeInput
               label="wSMR Token:"
@@ -187,7 +197,7 @@
               disabled={!canSetAmountToUnwrap}
               min={0}
               max={Math.max(
-                balanceWSMR - 1000000000000, // to avoid exceed the balance due to rounding
+                balanceWSMR,
                 0,
               )}
               decimals={18}
