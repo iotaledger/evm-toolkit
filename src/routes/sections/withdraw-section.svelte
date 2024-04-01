@@ -43,7 +43,7 @@
     isValidAddress;
   $: canWithdrawEverything = isValidAddress;
   $: $withdrawStateStore.isMetamaskConnected = window.ethereum
-    ? window.ethereum.isConnected()
+    ? window.ethereum.isMetamaskConnected
     : false;
 
   $: $withdrawStateStore, updateFormInput();
