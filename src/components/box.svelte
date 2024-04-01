@@ -1,5 +1,5 @@
 <box-container
-  class="w-full h-full flex flex-col bg-shimmer-background rounded-xl p-6"
+  class="w-full h-full flex flex-col bg-background-primary rounded-xl p-6"
 >
   <slot />
 </box-container>

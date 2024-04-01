@@ -25,7 +25,7 @@
   $: activeTabs = APP_TABS.filter(
     tab =>
       $appConfiguration?.features?.includes(tab.feature) ||
-      (tab.feature === Feature.Faucet && $selectedNetwork.faucetEndpoint),
+      (tab.feature === Feature.Faucet && $selectedNetwork?.faucetEndpoint),
   ).map((tab, index) => ({
     ...tab,
     value: index + 1,

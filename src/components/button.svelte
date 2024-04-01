@@ -44,8 +44,8 @@
 <style lang="scss">
   button,
   a {
-    @apply bg-shimmer-action-primary;
-    @apply text-shimmer-text-primary;
+    @apply bg-action-primary;
+    @apply text-text-primary;
     @apply font-semibold;
     @apply p-3;
     @apply rounded-md;
@@ -58,24 +58,24 @@
     }
 
     &.secondary {
-      @apply bg-shimmer-background;
+      @apply bg-background-primary;
       @apply border-0;
-      @apply text-shimmer-text-secondary;
+      @apply text-text-secondary;
     }
     &.danger {
-      @apply bg-shimmer-background-error;
-      @apply text-shimmer-text-error;
+      @apply bg-background-error;
+      @apply text-text-error;
     }
 
     &.ghost {
       @apply bg-transparent;
-      @apply text-shimmer-action-primary;
-      @apply border border-shimmer-action-primary;
+      @apply text-action-primary;
+      @apply border border-action-primary;
       &.secondary {
-        @apply border-shimmer-text-secondary;
+        @apply border-text-secondary;
       }
       &.danger {
-        @apply border-shimmer-text-error;
+        @apply border-text-error;
       }
     }
 

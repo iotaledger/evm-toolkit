@@ -77,7 +77,7 @@
       on:keydown={event => handleEnterKeyDown(event, onConnectClick)}
     >
       <div class="flex items-center justify-center space-x-4">
-        <span class="text-white font-semibold">Connect your wallet</span>
+        <span class="text-text-default font-semibold">Connect your wallet</span>
       </div></wallet-box
     >
   {/if}
@@ -89,13 +89,13 @@
     @apply relative;
     @apply w-full;
     @apply flex justify-between;
-    @apply bg-shimmer-background-tertiary;
+    @apply bg-background-tertiary;
     @apply rounded-xl;
     @apply p-4;
     @apply transition-all duration-200 ease-in-out;
   }
   wallet-box {
     @apply cursor-pointer;
-    @apply hover:bg-shimmer-background-tertiary-hover;
+    @apply hover:bg-background-tertiary-hover;
   }
 </style>

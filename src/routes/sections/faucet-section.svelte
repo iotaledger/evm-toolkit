@@ -97,7 +97,7 @@
       <div
         on:click={onUseMyAddress}
         on:keydown={event => handleEnterKeyDown(event, onUseMyAddress)}
-        class="cursor-pointer text-shimmer-action-primary"
+        class="cursor-pointer text-action-primary"
         class:opacity-50={!allowUseSelectedAddress}
         class:pointer-events-none={!allowUseSelectedAddress}
       >

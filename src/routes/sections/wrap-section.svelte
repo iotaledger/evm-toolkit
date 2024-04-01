@@ -233,13 +233,13 @@
     @apply w-full;
     @apply flex;
     @apply justify-between;
-    @apply bg-shimmer-background-tertiary;
+    @apply bg-background-tertiary;
     @apply rounded-xl;
     @apply p-4;
   }
   info-item-title {
     @apply text-xs;
-    @apply text-shimmer-text-secondary;
+    @apply text-text-secondary;
   }
 
   info-item-value {

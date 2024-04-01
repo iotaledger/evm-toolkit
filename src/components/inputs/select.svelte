@@ -29,16 +29,16 @@
       @apply cursor-pointer;
       @apply p-4;
       @apply outline-0;
-      @apply border border-shimmer-background-tertiary;
+      @apply border border-background-tertiary;
       @apply rounded-lg;
-      @apply bg-shimmer-background-tertiary;
-      @apply text-white;
+      @apply bg-background-tertiary;
+      @apply text-text-default;
       @apply appearance-none;
     }
 
     select:hover,
     select:focus {
-      @apply bg-shimmer-background-tertiary;
+      @apply bg-background-tertiary;
     }
     select:disabled {
       @apply opacity-50;

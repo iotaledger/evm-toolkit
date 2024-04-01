@@ -50,11 +50,11 @@
 
 <style lang="scss">
   input-component {
-    @apply text-white;
+    @apply text-text-default;
     @apply flex flex-col space-y-1;
     @apply text-base;
-    @apply bg-shimmer-background-tertiary;
-    @apply border border-shimmer-background-secondary;
+    @apply bg-background-tertiary;
+    @apply border border-background-secondary;
     @apply rounded-lg;
     @apply p-4;
     &.disabled {
