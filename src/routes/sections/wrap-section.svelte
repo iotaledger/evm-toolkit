@@ -40,7 +40,7 @@
     balanceWSMR > 0 &&
     formInput.wsmrTokensToUnwrap > 0;
   $: $withdrawStateStore.isMetamaskConnected = window.ethereum
-    ? window.ethereum.isConnected()
+    ? window.ethereum.isMetamaskConnected
     : false;
 
   $: $withdrawStateStore, updateFormInput();
