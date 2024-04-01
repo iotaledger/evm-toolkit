@@ -23,16 +23,10 @@ export class wSMR {
     this.contract = contract;
   }
 
-  // smrTokens use 6 decimals
-  // wSMR tokens use 18 decimals
-  public smrToWSMRToken(smrTokens: BigInt) {
-    return BigInt(Number(smrTokens) * Math.pow(10, 12));
-  }
-
   public async estimateGasDeposit(smrTokens: BigInt) {
     const estimation = await this.contract.methods
       .deposit()
-      .estimateGas({ value: this.smrToWSMRToken(smrTokens) });
+      .estimateGas({ value: smrTokens });
 
     return estimation;
   }
@@ -50,7 +44,7 @@ export class wSMR {
 
     const result = await this.contract.methods.deposit().send({
       gas: estimation,
-      value: this.smrToWSMRToken(smrTokens),
+      value: smrTokens,
     });
 
     return result as ITransactionResponse;

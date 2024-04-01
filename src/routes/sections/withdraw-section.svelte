@@ -5,7 +5,7 @@
 
   import { truncateText } from '$lib/common';
   import { InputType } from '$lib/common/enums';
-  import { Bech32AddressLength } from '$lib/constants';
+  import { BASE_TOKEN_DECIMALS, Bech32AddressLength } from '$lib/constants';
   import { nodeClient, selectedNetwork } from '$lib/evm-toolkit';
   import type { INativeToken } from '$lib/native-token';
   import type { INFT } from '$lib/nft';
@@ -25,8 +25,6 @@
     nativeTokensToSend: {},
     nftIDToSend: null,
   };
-
-  const BASE_TOKEN_DECIMALS = 6;
 
   let isWithdrawing: boolean = false;
   let canSetAmountToWithdraw = true;
@@ -256,7 +254,7 @@
             $withdrawStateStore.availableBaseTokens - storageDeposit,
             0,
           )}
-          decimals={6}
+          decimals={BASE_TOKEN_DECIMALS}
         />
         {#each $withdrawStateStore.availableNativeTokens as nativeToken}
           <AmountRangeInput
