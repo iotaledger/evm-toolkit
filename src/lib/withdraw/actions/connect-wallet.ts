@@ -4,11 +4,12 @@ import { get } from 'svelte/store';
 import { ISCMagic } from '$lib/iscmagic';
 import { iscAbi, iscContractAddress } from '$lib/withdraw';
 
-import { wSMR } from '$lib/wsmr';
-import { wSMRAbi, wSMRContractAddress } from '$lib/wsmr';
+import { wToken } from '$lib/wrap';
+import { wSMRAbi, wIOTAAbi, wTokenContractAddress } from '$lib/wrap';
 
 import { addSelectedNetworkToMetamask, subscribeBalance } from '.';
 import { updateWithdrawStateStore, withdrawStateStore } from '../stores';
+import { appConfiguration } from '$lib/evm-toolkit';
 
 export async function connectToWallet() {
   updateWithdrawStateStore({ isLoading: true });
@@ -31,14 +32,15 @@ export async function connectToWallet() {
     const iscMagic = new ISCMagic(get(withdrawStateStore)?.contract);
     updateWithdrawStateStore({ iscMagic });
 
-    const contractWSMR = new EthContract(wSMRAbi, wSMRContractAddress, {
+    const selectedContractAbi = get(appConfiguration)?.wTicker === 'wSMR' ? wSMRAbi : wIOTAAbi;
+    const contractWToken = new EthContract(selectedContractAbi, wTokenContractAddress, {
       from: get(selectedAccount),
     });
 
-    updateWithdrawStateStore({ contractWSMR });
+    updateWithdrawStateStore({ contractWToken });
 
-    const wsmrContractObj = new wSMR(get(withdrawStateStore)?.contractWSMR);
-    updateWithdrawStateStore({ wsmrContractObj });
+    const wTokenContractObj = new wToken(get(withdrawStateStore)?.contractWToken);
+    updateWithdrawStateStore({ wTokenContractObj });
 
     await subscribeBalance();
   } catch (ex) {

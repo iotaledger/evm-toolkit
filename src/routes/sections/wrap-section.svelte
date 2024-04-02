@@ -7,17 +7,18 @@
   import {
     connectToWallet,
     withdrawStateStore,
-    addWSMRToMetamask,
+    addWTokenToMetamask,
   } from '$lib/withdraw';
-    import { GAS_PRICE } from '$lib/wsmr';
+    import { GAS_PRICE } from '$lib/wrap';
+    import { appConfiguration } from '$lib/evm-toolkit';
 
   type WrapFormInput = {
-    smrTokensToWrap: number;
-    wsmrTokensToUnwrap: number;
+    tokensToWrap: number;
+    wTokensToUnwrap: number;
   }
   const formInput: WrapFormInput = {
-    smrTokensToWrap: 0,
-    wsmrTokensToUnwrap: 0,
+    tokensToWrap: 0,
+    wTokensToUnwrap: 0,
   };
 
   const BASE_TOKEN_DECIMALS = 6;
@@ -28,19 +29,19 @@
   let canSetAmountToWrap = true;
   let canSetAmountToUnwrap = true;
   let estimatedTxFee: number = 0;
-  let balanceWSMR: number = 0;
+  let balanceWToken: number = 0;
 
   $: updateCanWrap($withdrawStateStore.availableBaseTokens);
-  $: formattedBalanceSMR = (
+  $: formattedBalanceToken = (
     $withdrawStateStore.availableBaseTokens /
     10 ** BASE_TOKEN_DECIMALS
   ).toFixed(6);
   $: canWrap =
     $withdrawStateStore.availableBaseTokens > 0 &&
-    formInput.smrTokensToWrap > 0;
+    formInput.tokensToWrap > 0;
   $: canUnwrap =
-    balanceWSMR > 0 &&
-    formInput.wsmrTokensToUnwrap > 0;
+    balanceWToken > 0 &&
+    formInput.wTokensToUnwrap > 0;
   $: $withdrawStateStore.isMetamaskConnected = window.ethereum
     ? window.ethereum.isConnected()
     : false;
@@ -48,27 +49,26 @@
   $: $withdrawStateStore, updateFormInput();
 
   function updateFormInput() {
-    if (formInput.smrTokensToWrap > $withdrawStateStore.availableBaseTokens) {
-      formInput.smrTokensToWrap = 0;
-    }
+    if (formInput.tokensToWrap > $withdrawStateStore.availableBaseTokens) {
+      formInput.tokensToWrap = 0;
+    } 
   }
 
   async function updateCanWrap(_baseTokens: number,) {
-    if (!$withdrawStateStore.wsmrContractObj) {
+    if (!$withdrawStateStore.wTokenContractObj) {
       return (canSetAmountToWrap = false);
     }
 
     try {
-      const estimatedGas = await ($withdrawStateStore.wsmrContractObj as any).estimateGasDeposit(0);
+      const estimatedGas = await ($withdrawStateStore.wTokenContractObj as any).estimateGasDeposit(0);
       estimatedTxFee = +estimatedGas.toString() * GAS_PRICE;
       estimatedTxFee += 0.01; // to avoid not enough txFee
       estimatedTxFee *= 10 ** 6; // SMR uses 6 decimals
-
       canSetAmountToWrap = $withdrawStateStore.availableBaseTokens > estimatedTxFee;
-      balanceWSMR = await ($withdrawStateStore.wsmrContractObj as any).balanceOf($selectedAccount);
-      balanceWSMR = Number(balanceWSMR);
-      balanceWSMR -= 1000000000000; // to avoid exceed the balance due to rounding
-      canSetAmountToUnwrap = balanceWSMR > 0;
+      balanceWToken = await ($withdrawStateStore.wTokenContractObj as any).balanceOf($selectedAccount);
+      balanceWToken = Number(balanceWToken);
+      balanceWToken -= 1000000000000; // to avoid exceed the balance due to rounding
+      canSetAmountToUnwrap = balanceWToken > 0;
     } catch (ex) {
       console.log('updateCanWrap - Error:', ex);
       canSetAmountToWrap = false;
@@ -77,8 +77,8 @@
   }
 
   async function wrapOrUnwrap(
-    smrTokens: number,
-    wsmrTokens: number,
+    tokens: number,
+    wTokens: number,
   ) {
     if (!$selectedAccount) {
       return;
@@ -86,17 +86,17 @@
 
     let result: any;
 
-    const wrapText = smrTokens > 0 ? 'wrap' : 'unwrap';
+    const wrapText = tokens > 0 ? 'wrap' : 'unwrap';
 
     try {
-      smrTokens > 0 ? isWraping = true : isUnwraping = true;
-      result = smrTokens > 0 ? await $withdrawStateStore.wsmrContractObj.deposit(
-        smrTokens,
-      ) : await $withdrawStateStore.wsmrContractObj.withdraw(
-        BigInt(wsmrTokens),
+      tokens > 0 ? isWraping = true : isUnwraping = true;
+      result = tokens > 0 ? await $withdrawStateStore.wTokenContractObj.deposit(
+        BigInt(tokens),
+      ) : await $withdrawStateStore.wTokenContractObj.withdraw(
+        BigInt(wTokens),
       );
     } catch (ex) {
-      smrTokens > 0 ? isWraping = false : isUnwraping = false;
+      tokens > 0 ? isWraping = false : isUnwraping = false;
       showNotification({
         type: NotificationType.Error,
         message: `Failed to send ${wrapText} request: ${ex?.data?.message || ex?.message}`,
@@ -124,12 +124,12 @@
     }
     isWraping = false;
     isUnwraping = false;
-    smrTokens > 0 ? formInput.smrTokensToWrap = 0 : formInput.wsmrTokensToUnwrap = 0;
+    tokens > 0 ? formInput.tokensToWrap = 0 : formInput.wTokensToUnwrap = 0;
   }
 
   async function onWrapClick() {
     await wrapOrUnwrap(
-      formInput.smrTokensToWrap,
+      formInput.tokensToWrap,
       0
     );
   }
@@ -137,7 +137,7 @@
   async function onUnwrapClick() {
     await wrapOrUnwrap(
       0,
-      formInput.wsmrTokensToUnwrap,
+      formInput.wTokensToUnwrap,
     );
   }
 
@@ -155,22 +155,22 @@
         <info-item-value>{$chainId}</info-item-value>
       </div>
       <div class="flex flex-col space-y-2">
-        <info-item-title>SMR Balance</info-item-title>
-        <info-item-value>{formattedBalanceSMR}</info-item-value>
+        <info-item-title>{$appConfiguration?.ticker} Balance</info-item-title>
+        <info-item-value>{formattedBalanceToken}</info-item-value>
       </div>
       <div class="flex flex-col space-y-2">
-        <info-item-title>wSMR Balance</info-item-title>
-        <info-item-value>{(balanceWSMR / 10 ** wSMR_TOKEN_DECIMALS).toFixed(6)}</info-item-value>
+        <info-item-title>{$appConfiguration?.wTicker} Balance</info-item-title>
+        <info-item-value>{(balanceWToken / 10 ** wSMR_TOKEN_DECIMALS).toFixed(6)}</info-item-value>
       </div>
     </info-box>
     <info-box>
       <div class="flex flex-col space-y-2">
         <tokens-to-send-wrapper>
-          <div class="mb-2">Wrap SMR</div>
+          <div class="mb-2">Wrap {$appConfiguration?.ticker}</div>
           <info-box class="flex flex-col space-y-4 max-h-96 overflow-auto">
             <AmountRangeInput
-              label="SMR Token:"
-              bind:value={formInput.smrTokensToWrap}
+              label="{$appConfiguration?.ticker} Token:"
+              bind:value={formInput.tokensToWrap}
               disabled={!canSetAmountToWrap}
               min={estimatedTxFee}
               max={Math.max(
@@ -185,19 +185,19 @@
       <div class="flex flex-col space-y-2">
         <tokens-to-send-wrapper>
           <div class="mb-2">
-            Unwrap wSMR {' '} &nbsp;
-            <button on:click={addWSMRToMetamask}>
+            Unwrap {$appConfiguration?.wTicker} {' '} &nbsp;
+            <button on:click={addWTokenToMetamask}>
               <img src="/metamask-logo.svg" alt="Metamask logo" width="70%" />
             </button>
           </div>
           <info-box class="flex flex-col space-y-4 max-h-96 overflow-auto">
             <AmountRangeInput
-              label="wSMR Token:"
-              bind:value={formInput.wsmrTokensToUnwrap}
+              label="{$appConfiguration?.wTicker} Token:"
+              bind:value={formInput.wTokensToUnwrap}
               disabled={!canSetAmountToUnwrap}
               min={0}
               max={Math.max(
-                balanceWSMR,
+                balanceWToken,
                 0,
               )}
               decimals={18}
@@ -239,7 +239,7 @@
   }
   info-item-title {
     @apply text-xs;
-    @apply text-text-secondary;
+    @apply text-color-secondary;
   }
 
   info-item-value {
