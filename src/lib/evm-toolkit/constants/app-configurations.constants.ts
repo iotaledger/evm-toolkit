@@ -5,7 +5,7 @@ export const APP_CONFIGURATIONS: Record<Network, IAppConfiguration> = {
     [Network.Mainnet]: {
         theme: Theme.IOTA,
         ticker: 'IOTA',
-        wTiker: 'wIOTA',
+        wTicker: 'wIOTA',
         bech32Hrp: 'iota',
         logo: "iota.svg",
         favicon: "iota-fav.ico",
@@ -14,7 +14,7 @@ export const APP_CONFIGURATIONS: Record<Network, IAppConfiguration> = {
     [Network.Shimmer]: {
         theme: Theme.Shimmer,
         ticker: 'SMR',
-        wTiker: 'wSMR',
+        wTicker: 'wSMR',
         bech32Hrp: 'smr',
         logo: "shimmer.svg",
         favicon: "shimmer-fav.ico",
@@ -23,7 +23,7 @@ export const APP_CONFIGURATIONS: Record<Network, IAppConfiguration> = {
     [Network.Testnet]: {
         theme: Theme.Shimmer,
         ticker: 'RMS',
-        wTiker: 'wRMS',
+        wTicker: 'wRMS',
         bech32Hrp: 'rms',
         logo: "shimmer.svg",
         favicon: "shimmer-fav.ico",

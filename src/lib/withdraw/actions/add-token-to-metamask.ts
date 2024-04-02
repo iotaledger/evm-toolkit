@@ -1,10 +1,10 @@
 import { get } from 'svelte/store';
 
-import { selectedNetwork } from '$lib/evm-toolkit';
+import { appConfiguration, selectedNetwork } from '$lib/evm-toolkit';
 import { NotificationType, showNotification } from '$lib/notification';
-import { wSMRContractAddress } from '$lib/wsmr';
+import { wTokenContractAddress } from '$lib/wrap';
 
-export async function addWSMRToMetamask(): Promise<void> {
+export async function addWTokenToMetamask(): Promise<void> {
   const { ethereum } = window as any;
   const $selectedNetwork = get(selectedNetwork);
   if ($selectedNetwork) {
@@ -15,8 +15,8 @@ export async function addWSMRToMetamask(): Promise<void> {
           params: {
             type: 'ERC20',
             options: {
-              address: wSMRContractAddress, // ERC20 token address
-              symbol: 'wSMR',
+              address: wTokenContractAddress, // ERC20 token address
+              symbol: get(appConfiguration)?.wTicker,
               decimals: 18,
             },
           },

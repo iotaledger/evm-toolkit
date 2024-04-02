@@ -3,7 +3,13 @@
 
   import { Navbar, NotificationManager, PopupManager } from '$components';
 
-  import { Theme, appConfiguration, fetchConfiguredNetworks, networks } from '$lib/evm-toolkit';
+  import {
+    Theme,
+    appConfiguration,
+    fetchConfiguredNetworks,
+    networks,
+    selectedNetwork,
+  } from '$lib/evm-toolkit';
 
   import '../app.scss';
 
@@ -24,12 +30,30 @@
     }
     networks.set(updatedNetworks);
   });
+
+  const setTheme = theme => {
+    const htmlElement = document?.querySelector('html');
+    if (htmlElement) {
+      htmlElement.setAttribute('data-theme', theme);
+    }
+  };
+
+  $: {
+    const configuredTheme = $appConfiguration?.theme;
+    if (configuredTheme) {
+      setTheme(configuredTheme);
+    }
+  }
 </script>
 
 <Navbar />
 <main class="w-full flex flex-1 items-center justify-center">
   <background-decorator>
-    <div style={$appConfiguration?.theme === Theme.Shimmer ? "background-image: url('/bg-shimmer-shapes.svg');": "background-image: url('/bg-iota-shapes.svg');"} />
+    <div
+      style={$appConfiguration?.theme === Theme.Shimmer
+        ? "background-image: url('/bg-shimmer-shapes.svg');"
+        : "background-image: url('/bg-iota-shapes.svg');"}
+    />
   </background-decorator>
   <slot />
 </main>

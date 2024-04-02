@@ -1,2 +1,2 @@
-export * from './wsmr';
+export * from './wtoken';
 export * from './constants';

@@ -6,7 +6,7 @@
   import { truncateText } from '$lib/common';
   import { InputType } from '$lib/common/enums';
   import { Bech32AddressLength } from '$lib/constants';
-  import { nodeClient, selectedNetwork } from '$lib/evm-toolkit';
+  import { appConfiguration, nodeClient, selectedNetwork } from '$lib/evm-toolkit';
   import type { INativeToken } from '$lib/native-token';
   import type { INFT } from '$lib/nft';
   import { NotificationType, showNotification } from '$lib/notification';
@@ -36,18 +36,17 @@
     $withdrawStateStore.availableBaseTokens /
     10 ** BASE_TOKEN_DECIMALS
   ).toFixed(2);
-  $: isValidAddress = formInput.receiverAddress.length == Bech32AddressLength;
+  $: isValidAddress = formInput.receiverAddress.length === Bech32AddressLength;
   $: canWithdraw =
-    $withdrawStateStore.availableBaseTokens > 0 &&
+    $withdrawStateStore?.availableBaseTokens > 0 &&
     formInput.baseTokensToSend > 0 &&
     isValidAddress;
-  $: canWithdrawEverything = isValidAddress;
   $: $withdrawStateStore.isMetamaskConnected = window.ethereum
     ? window.ethereum.isConnected()
     : false;
 
   $: $withdrawStateStore, updateFormInput();
-  $: placeholderHrp = $selectedNetwork?.faucetEndpoint ? 'rms/tst/...' : 'smr';
+  $: placeholderHrp = $selectedNetwork?.faucetEndpoint ? `${$appConfiguration?.bech32Hrp.toLowerCase()}/tst/...` : $appConfiguration?.ticker.toLowerCase();
 
   function updateFormInput() {
     if (formInput.baseTokensToSend > $withdrawStateStore.availableBaseTokens) {
@@ -248,7 +247,7 @@
       <div class="mb-2">Tokens to send</div>
       <info-box class="flex flex-col space-y-4 max-h-96 overflow-auto">
         <AmountRangeInput
-          label="SMR Token:"
+          label="{$appConfiguration?.ticker} Token:"
           bind:value={formInput.baseTokensToSend}
           disabled={!canSetAmountToWithdraw}
           min={storageDeposit}
@@ -301,7 +300,7 @@
   }
   info-item-title {
     @apply text-xs;
-    @apply text-text-secondary;
+    @apply text-color-secondary;
   }
 
   info-item-value {
