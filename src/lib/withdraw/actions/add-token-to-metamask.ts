@@ -3,6 +3,7 @@ import { get } from 'svelte/store';
 import { selectedNetwork } from '$lib/evm-toolkit';
 import { NotificationType, showNotification } from '$lib/notification';
 import { wSMRContractAddress } from '$lib/wsmr';
+import { L2_NATIVE_GAS_TOKEN_DECIMALS } from '$lib/constants';
 
 export async function addWSMRToMetamask(): Promise<void> {
   const { ethereum } = window as any;
@@ -17,7 +18,7 @@ export async function addWSMRToMetamask(): Promise<void> {
             options: {
               address: wSMRContractAddress, // ERC20 token address
               symbol: 'wSMR',
-              decimals: 18,
+              decimals: L2_NATIVE_GAS_TOKEN_DECIMALS,
             },
           },
         });

@@ -10,7 +10,7 @@
     addWSMRToMetamask,
   } from '$lib/withdraw';
     import { GAS_PRICE } from '$lib/wsmr';
-    import { BASE_TOKEN_DECIMALS, wSMR_TOKEN_DECIMALS } from '$lib/constants';
+    import { L2_NATIVE_GAS_TOKEN_DECIMALS, wSMR_TOKEN_DECIMALS } from '$lib/constants';
 
   type WrapFormInput = {
     smrTokensToWrap: number;
@@ -31,7 +31,7 @@
   $: updateCanWrap($withdrawStateStore.availableBaseTokens);
   $: formattedBalanceSMR = (
     $withdrawStateStore.availableBaseTokens /
-    10 ** BASE_TOKEN_DECIMALS
+    10 ** L2_NATIVE_GAS_TOKEN_DECIMALS
   ).toFixed(6);
   $: canWrap =
     $withdrawStateStore.availableBaseTokens > 0 &&
@@ -60,7 +60,7 @@
       const estimatedGas = await ($withdrawStateStore.wsmrContractObj as any).estimateGasDeposit(0);
       estimatedTxFee = +estimatedGas.toString() * GAS_PRICE;
       estimatedTxFee += 0.01; // to avoid not enough txFee
-      estimatedTxFee *= 10 ** BASE_TOKEN_DECIMALS;
+      estimatedTxFee *= 10 ** L2_NATIVE_GAS_TOKEN_DECIMALS;
 
       canSetAmountToWrap = $withdrawStateStore.availableBaseTokens > estimatedTxFee;
       balanceWSMR = await ($withdrawStateStore.wsmrContractObj as any).balanceOf($selectedAccount);
@@ -175,7 +175,7 @@
                 $withdrawStateStore.availableBaseTokens - estimatedTxFee,
                 0,
               )}
-              decimals={BASE_TOKEN_DECIMALS}
+              decimals={L2_NATIVE_GAS_TOKEN_DECIMALS}
             />
           </info-box>
         </tokens-to-send-wrapper>
@@ -198,7 +198,7 @@
                 balanceWSMR,
                 0,
               )}
-              decimals={18}
+              decimals={L2_NATIVE_GAS_TOKEN_DECIMALS}
             />
           </info-box>
         </tokens-to-send-wrapper>

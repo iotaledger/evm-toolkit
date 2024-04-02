@@ -5,7 +5,7 @@
 
   import { truncateText } from '$lib/common';
   import { InputType } from '$lib/common/enums';
-  import { BASE_TOKEN_DECIMALS, Bech32AddressLength } from '$lib/constants';
+  import { L2_NATIVE_GAS_TOKEN_DECIMALS, Bech32AddressLength } from '$lib/constants';
   import { nodeClient, selectedNetwork } from '$lib/evm-toolkit';
   import type { INativeToken } from '$lib/native-token';
   import type { INFT } from '$lib/nft';
@@ -32,7 +32,7 @@
   $: updateCanWithdraw($withdrawStateStore.availableBaseTokens, {}, null);
   $: formattedBalance = (
     $withdrawStateStore.availableBaseTokens /
-    10 ** BASE_TOKEN_DECIMALS
+    10 ** L2_NATIVE_GAS_TOKEN_DECIMALS
   ).toFixed(2);
   $: isValidAddress = formInput.receiverAddress.length == Bech32AddressLength;
   $: canWithdraw =
@@ -254,7 +254,7 @@
             $withdrawStateStore.availableBaseTokens - storageDeposit,
             0,
           )}
-          decimals={BASE_TOKEN_DECIMALS}
+          decimals={L2_NATIVE_GAS_TOKEN_DECIMALS}
         />
         {#each $withdrawStateStore.availableNativeTokens as nativeToken}
           <AmountRangeInput
