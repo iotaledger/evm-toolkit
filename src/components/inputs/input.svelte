@@ -50,7 +50,7 @@
 
 <style lang="scss">
   input-component {
-    @apply text-text-default;
+    @apply text-color-default;
     @apply flex flex-col space-y-1;
     @apply text-base;
     @apply bg-background-tertiary;

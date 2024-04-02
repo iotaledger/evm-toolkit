@@ -45,7 +45,7 @@
   button,
   a {
     @apply bg-action-primary;
-    @apply text-text-primary;
+    @apply text-color-primary;
     @apply font-semibold;
     @apply p-3;
     @apply rounded-md;
@@ -60,11 +60,11 @@
     &.secondary {
       @apply bg-background-primary;
       @apply border-0;
-      @apply text-text-secondary;
+      @apply text-color-secondary;
     }
     &.danger {
       @apply bg-background-error;
-      @apply text-text-error;
+      @apply text-color-error;
     }
 
     &.ghost {
@@ -72,10 +72,10 @@
       @apply text-action-primary;
       @apply border border-action-primary;
       &.secondary {
-        @apply border-text-secondary;
+        @apply border-color-secondary;
       }
       &.danger {
-        @apply border-text-error;
+        @apply border-color-error;
       }
     }
 

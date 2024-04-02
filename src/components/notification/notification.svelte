@@ -35,14 +35,14 @@
       @apply bg-background-error;
       notification-message,
       button {
-        @apply text-text-error;
+        @apply text-color-error;
       }
     }
     &.warning {
       @apply bg-background-warning;
       notification-message,
       button {
-        @apply text-text-secondary;
+        @apply text-color-secondary;
       }
     }
   }

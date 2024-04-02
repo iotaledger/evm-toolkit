@@ -32,7 +32,7 @@
       @apply border border-background-tertiary;
       @apply rounded-lg;
       @apply bg-background-tertiary;
-      @apply text-text-default;
+      @apply text-color-default;
       @apply appearance-none;
     }
 

@@ -124,7 +124,7 @@
   input[type='text'] {
     &::placeholder {
       @apply text-xs;
-      @apply text-text-secondary;
+      @apply text-color-secondary;
     }
   }
 </style>

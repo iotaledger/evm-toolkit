@@ -19,10 +19,10 @@
     @apply cursor-pointer;
     @apply w-full flex flex-row space-x-2 items-center justify-center;
     @apply bg-background-primary;
-    @apply text-text-primary;
+    @apply text-color-primary;
     @apply font-semibold;
     @apply text-center;
-    @apply text-text-default;
+    @apply text-color-default;
     @apply p-3;
   }
 </style>

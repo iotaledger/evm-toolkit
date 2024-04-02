@@ -77,7 +77,7 @@
       on:keydown={event => handleEnterKeyDown(event, onConnectClick)}
     >
       <div class="flex items-center justify-center space-x-4">
-        <span class="text-text-default font-semibold">Connect your wallet</span>
+        <span class="text-color-default font-semibold">Connect your wallet</span>
       </div></wallet-box
     >
   {/if}
