@@ -33,14 +33,15 @@
 </script>
 
 <nav class="h-16 flex justify-between items center">
-  <logo-wrapper class="h-full flex items-center">
+  <logo-wrapper class="h-full flex items-center space-x-2">
     <img
       src="/{$appConfiguration?.logo}"
       alt="{$appConfiguration?.theme} logo"
+      class="h-12 md:h-16"
     />
-    <h1 class="text-md md:text-xl ml-4 text-color-default font-semibold">
+    <span class="text-sm md:text-md text-color-default font-semibold">
       {$selectedNetwork?.chainRef?.includes("testnet") ? 'EVM Testnet' : 'EVM'}
-    </h1>
+    </span>
   </logo-wrapper>
   <items-wrapper class="flex items-center space-x-4 mr-4">
     <SettingsIcon
