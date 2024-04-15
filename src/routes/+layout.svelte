@@ -10,16 +10,24 @@
 
   import '../app.scss';
 
-  let isNetworkLoaded = false
+  let isNetworkLoaded = false;
 
   onMount(async () => {
     const initialNetworks = await fetchConfiguredNetworks();
     let updatedNetworks = initialNetworks;
     if ($networks?.length) {
       updatedNetworks = initialNetworks.map(network => {
-        const matchedExistingNetwork = $networks.find(
+        let matchedExistingNetwork = $networks.find(
           _network => _network?.id === network?.id,
         );
+        // keep configured network text and chainRef
+        matchedExistingNetwork = {
+          ...matchedExistingNetwork,
+          ...{
+            text: network?.text,
+            chainRef: network?.chainRef,
+          },
+        };
         if (network?.id === 0 || !matchedExistingNetwork) {
           return network;
         } else {
@@ -45,26 +53,26 @@
     }
   }
 </script>
-{#if isNetworkLoaded}
-<Navbar />
-<main class="w-full flex flex-1 items-center justify-center">
-  <background-decorator>
-    <div
-      style={$appConfiguration?.theme === Theme.Shimmer
-        ? "background-image: url('/bg-shimmer-shapes.svg');"
-        : "background-image: url('/bg-iota-shapes.svg');"}
-    />
-  </background-decorator>
-  <slot />
-</main>
-<PopupManager />
-<NotificationManager />
-  {:else}
-    <div class="bg-white w-full h-full flex items-center justify-center">
-      <div class="h-6 w-6 animate-spin rounded-full border-b-2 border-current" />
-    </div>
-{/if}
 
+{#if isNetworkLoaded}
+  <Navbar />
+  <main class="w-full flex flex-1 items-center justify-center">
+    <background-decorator>
+      <div
+        style={$appConfiguration?.theme === Theme.Shimmer
+          ? "background-image: url('/bg-shimmer-shapes.svg');"
+          : "background-image: url('/bg-iota-shapes.svg');"}
+      />
+    </background-decorator>
+    <slot />
+  </main>
+  <PopupManager />
+  <NotificationManager />
+{:else}
+  <div class="bg-white w-full h-full flex items-center justify-center">
+    <div class="h-6 w-6 animate-spin rounded-full border-b-2 border-current" />
+  </div>
+{/if}
 
 <style lang="scss">
   main {
