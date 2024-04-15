@@ -64,7 +64,8 @@ export async function withdrawParameters(
     },
     {
       // Fungible Tokens
-      baseTokens: baseTokensToWithdraw,
+      // convert to 6 decimals as ISCMagic contract's send() function accepts only uint64
+      baseTokens: parseInt(String(baseTokensToWithdraw/10**12)), // baseTokensToWithdraw,
       nativeTokens: nativeTokenTuple,
       nfts: nftIDParam,
     },

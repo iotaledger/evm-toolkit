@@ -37,7 +37,7 @@ export class ISCMagic {
 
   public async getBaseTokens(eth: Eth, account: string): Promise<number> {
     const addressBalance = await eth.getBalance(account);
-    const balance = BigInt(addressBalance) / BigInt(1e12);
+    const balance = BigInt(addressBalance);
 
     return Number(balance);
   }

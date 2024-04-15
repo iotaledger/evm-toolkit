@@ -2,6 +2,7 @@ import { get } from 'svelte/store';
 
 import { selectedNetwork } from '$lib/evm-toolkit';
 import { NotificationType, showNotification } from '$lib/notification';
+import { L2_NATIVE_GAS_TOKEN_DECIMALS } from '$lib/constants';
 
 export async function addSelectedNetworkToMetamask(): Promise<void> {
     const { ethereum } = window as any;
@@ -18,7 +19,7 @@ export async function addSelectedNetworkToMetamask(): Promise<void> {
                             nativeCurrency: {
                                 name: 'SMR',
                                 symbol: 'SMR',
-                                decimals: 18,
+                                decimals: L2_NATIVE_GAS_TOKEN_DECIMALS,
                             },
                             ...($selectedNetwork.networkUrl && { rpcUrls: [$selectedNetwork.networkUrl] }),
                             ...($selectedNetwork.blockExplorer && { blockExplorerUrls: [$selectedNetwork.blockExplorer] }),
