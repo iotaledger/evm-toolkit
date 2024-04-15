@@ -1,17 +1,16 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-
   import { Navbar, NotificationManager, PopupManager } from '$components';
-
   import {
     Theme,
     appConfiguration,
     fetchConfiguredNetworks,
     networks,
-    selectedNetwork,
   } from '$lib/evm-toolkit';
 
   import '../app.scss';
+
+  let isNetworkLoaded = false
 
   onMount(async () => {
     const initialNetworks = await fetchConfiguredNetworks();
@@ -29,6 +28,7 @@
       });
     }
     networks.set(updatedNetworks);
+    isNetworkLoaded = true;
   });
 
   const setTheme = theme => {
@@ -45,7 +45,7 @@
     }
   }
 </script>
-
+{#if isNetworkLoaded}
 <Navbar />
 <main class="w-full flex flex-1 items-center justify-center">
   <background-decorator>
@@ -59,6 +59,12 @@
 </main>
 <PopupManager />
 <NotificationManager />
+  {:else}
+    <div class="bg-white w-full h-full flex items-center justify-center">
+      <div class="h-6 w-6 animate-spin rounded-full border-b-2 border-current" />
+    </div>
+{/if}
+
 
 <style lang="scss">
   main {
