@@ -1,6 +1,6 @@
 import { derived, type Readable } from 'svelte/store';
 import { APP_CONFIGURATIONS } from '../constants';
-import { Network } from '../enums';
+import { ChainReference } from '../enums';
 import type { IAppConfiguration } from '../interfaces';
 import { selectedNetwork } from './';
 
@@ -8,5 +8,5 @@ export const appConfiguration: Readable<IAppConfiguration> = derived(selectedNet
     if (!$selectedNetwork) {
         return null;
     }
-    return APP_CONFIGURATIONS[$selectedNetwork.network ?? Network.Shimmer];
+    return APP_CONFIGURATIONS[$selectedNetwork.chainRef ?? ChainReference.ShimmerEVM];
 })

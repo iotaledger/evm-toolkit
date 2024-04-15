@@ -8,7 +8,7 @@
         "chainID": 1073,
         "blockExplorer": "https://explorer.evm.testnet.shimmer.network",
         "networkUrl": "https://json-rpc.evm.testnet.shimmer.network",
-        "network": "shimmer"
+        "chainRef": "iota-evm"
     },
     {
         "id": 1,
@@ -19,6 +19,6 @@
         "chainID": 1074,
         "blockExplorer": "",
         "networkUrl": "",
-        "network": "shimmer"
+        "chainRef": "iota-evm"
     }
 ]

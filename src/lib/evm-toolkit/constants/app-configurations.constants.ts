@@ -1,8 +1,8 @@
-import { Feature, Network, Theme } from "../enums";
+import { Feature, ChainReference, Theme } from "../enums";
 import type { IAppConfiguration } from "../interfaces";
 
-export const APP_CONFIGURATIONS: Record<Network, IAppConfiguration> = {
-    [Network.Mainnet]: {
+export const APP_CONFIGURATIONS: Record<ChainReference, IAppConfiguration> = {
+    [ChainReference.IOTAEVM]: {
         theme: Theme.IOTA,
         ticker: 'IOTA',
         wTicker: 'wIOTA',
@@ -11,7 +11,7 @@ export const APP_CONFIGURATIONS: Record<Network, IAppConfiguration> = {
         favicon: "iota-fav.ico",
         features: [Feature.Withdraw, Feature.Wrap]
     },
-    [Network.Shimmer]: {
+    [ChainReference.ShimmerEVM]: {
         theme: Theme.Shimmer,
         ticker: 'SMR',
         wTicker: 'wSMR',
@@ -20,7 +20,7 @@ export const APP_CONFIGURATIONS: Record<Network, IAppConfiguration> = {
         favicon: "shimmer-fav.ico",
         features: [Feature.Withdraw, Feature.Wrap]
     },
-    [Network.Testnet]: {
+    [ChainReference.ShimmerEVMTestnet]: {
         theme: Theme.Shimmer,
         ticker: 'RMS',
         wTicker: 'wRMS',
