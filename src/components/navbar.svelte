@@ -37,9 +37,9 @@
     <img
       src="/{$appConfiguration?.logo}"
       alt="{$appConfiguration?.theme} logo"
-      class="h-12 md:h-16"
+      class="h-12"
     />
-    <span class="text-sm md:text-md text-color-default font-semibold">
+    <span class="text-xs md:text-sm text-color-default font-semibold">
       {$selectedNetwork?.chainRef?.includes("testnet") ? 'EVM Testnet' : 'EVM'}
     </span>
   </logo-wrapper>
