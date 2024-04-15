@@ -44,7 +44,7 @@
     : false;
 
   $: $withdrawStateStore, updateFormInput();
-  $: placeholderHrp = $selectedNetwork?.faucetEndpoint ? `${$appConfiguration?.bech32Hrp.toLowerCase()}/tst/...` : $appConfiguration?.ticker.toLowerCase();
+  $: placeholderHrp = `${$appConfiguration?.bech32Hrp.toLowerCase()}...`;
 
   function updateFormInput() {
     if (formInput.baseTokensToSend > $withdrawStateStore.availableBaseTokens) {
