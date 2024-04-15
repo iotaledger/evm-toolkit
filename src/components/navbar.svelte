@@ -6,7 +6,7 @@
   import { PopupId } from '$lib/popup';
   import { openPopup } from '$lib/popup/actions';
   import { connectToWallet } from '$lib/withdraw';
-  import { appConfiguration } from '$lib/evm-toolkit';
+  import { appConfiguration, selectedNetwork } from '$lib/evm-toolkit';
 
   function handleSettings() {
     openPopup(PopupId.Settings);
@@ -32,16 +32,16 @@
   }
 </script>
 
-<nav class="flex justify-between items center">
-  <image-wrapper class="h-full flex items-center">
+<nav class="h-16 flex justify-between items center">
+  <logo-wrapper class="h-full flex items-center">
     <img
       src="/{$appConfiguration?.logo}"
       alt="{$appConfiguration?.theme} logo"
     />
-    <h1 class="text-md md:text-2xl ml-4 text-color-default font-semibold">
-      {$appConfiguration?.theme.toUpperCase()}
+    <h1 class="text-md md:text-xl ml-4 text-color-default font-semibold">
+      {$selectedNetwork?.chainRef?.includes("testnet") ? 'EVM Testnet' : 'EVM'}
     </h1>
-  </image-wrapper>
+  </logo-wrapper>
   <items-wrapper class="flex items-center space-x-4 mr-4">
     <SettingsIcon
       on:click={handleSettings}
