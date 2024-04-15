@@ -1,11 +1,9 @@
 <script lang="ts">
   import { chainId, connected, selectedAccount } from 'svelte-web3';
-
   import { AmountRangeInput, Button, Input, Select } from '$components';
-
-  import { truncateText } from '$lib/common';
+  import { getBech32AddressLengthFromChain, truncateText } from '$lib/common';
   import { InputType } from '$lib/common/enums';
-  import { L2_NATIVE_GAS_TOKEN_DECIMALS, Bech32AddressLength } from '$lib/constants';
+  import { L2_NATIVE_GAS_TOKEN_DECIMALS } from '$lib/constants';
   import { appConfiguration, nodeClient, selectedNetwork } from '$lib/evm-toolkit';
   import type { INativeToken } from '$lib/native-token';
   import type { INFT } from '$lib/nft';
@@ -14,7 +12,6 @@
   import {
     connectToWallet,
     pollBalance,
-    randomBech32Address,
     storageDeposit,
     withdrawStateStore,
   } from '$lib/withdraw';
@@ -34,7 +31,7 @@
     $withdrawStateStore.availableBaseTokens /
     10 ** L2_NATIVE_GAS_TOKEN_DECIMALS
   ).toFixed(2);
-  $: isValidAddress = formInput.receiverAddress.length === Bech32AddressLength;
+  $: isValidAddress = formInput.receiverAddress.length === getBech32AddressLengthFromChain($selectedNetwork.chainRef);
   $: canWithdraw =
     $withdrawStateStore?.availableBaseTokens > 0 &&
     formInput.baseTokensToSend > 0 &&

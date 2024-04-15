@@ -1,13 +1,11 @@
 <script lang="ts">
   import { connected, selectedAccount } from 'svelte-web3';
-
   import { Button, Input } from '$components';
-
-  import { Bech32AddressLength, EVMAddressLength } from '$lib/constants';
+  import { EVMAddressLength } from '$lib/constants';
   import { indexerClient, nodeClient, selectedNetwork } from '$lib/evm-toolkit';
   import { IotaWallet, SendFundsTransaction } from '$lib/faucet';
   import { NotificationType, showNotification } from '$lib/notification';
-  import { handleEnterKeyDown } from '$lib/common';
+  import { getBech32AddressLengthFromChain, handleEnterKeyDown } from '$lib/common';
 
   let isSendingFunds: boolean;
 
@@ -17,7 +15,7 @@
   $: enableSendFunds =
     evmAddress.length == EVMAddressLength &&
     $selectedNetwork != null &&
-    $selectedNetwork.chainAddress.length == Bech32AddressLength &&
+    $selectedNetwork.chainAddress.length == getBech32AddressLengthFromChain($selectedNetwork.chainRef) &&
     !isSendingFunds;
   $: allowUseSelectedAddress =
     $connected && $selectedAccount && $selectedAccount !== evmAddress;
