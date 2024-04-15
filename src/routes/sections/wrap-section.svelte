@@ -11,6 +11,7 @@
   } from '$lib/withdraw';
     import { GAS_PRICE } from '$lib/wrap';
     import { appConfiguration } from '$lib/evm-toolkit';
+    import { L2_NATIVE_GAS_TOKEN_DECIMALS, wSMR_TOKEN_DECIMALS } from '$lib/constants';
 
   type WrapFormInput = {
     tokensToWrap: number;
@@ -20,9 +21,6 @@
     tokensToWrap: 0,
     wTokensToUnwrap: 0,
   };
-
-  const BASE_TOKEN_DECIMALS = 6;
-  const wSMR_TOKEN_DECIMALS = 18;
 
   let isWraping: boolean = false;
   let isUnwraping: boolean = false;
@@ -34,7 +32,7 @@
   $: updateCanWrap($withdrawStateStore.availableBaseTokens);
   $: formattedBalanceToken = (
     $withdrawStateStore.availableBaseTokens /
-    10 ** BASE_TOKEN_DECIMALS
+    10 ** L2_NATIVE_GAS_TOKEN_DECIMALS
   ).toFixed(6);
   $: canWrap =
     $withdrawStateStore.availableBaseTokens > 0 &&
@@ -43,7 +41,7 @@
     balanceWToken > 0 &&
     formInput.wTokensToUnwrap > 0;
   $: $withdrawStateStore.isMetamaskConnected = window.ethereum
-    ? window.ethereum.isConnected()
+    ? window.ethereum.isMetamaskConnected
     : false;
 
   $: $withdrawStateStore, updateFormInput();
@@ -63,7 +61,7 @@
       const estimatedGas = await ($withdrawStateStore.wTokenContractObj as any).estimateGasDeposit(0);
       estimatedTxFee = +estimatedGas.toString() * GAS_PRICE;
       estimatedTxFee += 0.01; // to avoid not enough txFee
-      estimatedTxFee *= 10 ** 6; // SMR uses 6 decimals
+      estimatedTxFee *= 10 ** L2_NATIVE_GAS_TOKEN_DECIMALS;
       canSetAmountToWrap = $withdrawStateStore.availableBaseTokens > estimatedTxFee;
       balanceWToken = await ($withdrawStateStore.wTokenContractObj as any).balanceOf($selectedAccount);
       balanceWToken = Number(balanceWToken);
@@ -177,7 +175,7 @@
                 $withdrawStateStore.availableBaseTokens - estimatedTxFee,
                 0,
               )}
-              decimals={6}
+              decimals={L2_NATIVE_GAS_TOKEN_DECIMALS}
             />
           </info-box>
         </tokens-to-send-wrapper>
@@ -200,7 +198,7 @@
                 balanceWToken,
                 0,
               )}
-              decimals={18}
+              decimals={L2_NATIVE_GAS_TOKEN_DECIMALS}
             />
           </info-box>
         </tokens-to-send-wrapper>

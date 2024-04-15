@@ -5,7 +5,7 @@
 
   import { truncateText } from '$lib/common';
   import { InputType } from '$lib/common/enums';
-  import { Bech32AddressLength } from '$lib/constants';
+  import { L2_NATIVE_GAS_TOKEN_DECIMALS, Bech32AddressLength } from '$lib/constants';
   import { appConfiguration, nodeClient, selectedNetwork } from '$lib/evm-toolkit';
   import type { INativeToken } from '$lib/native-token';
   import type { INFT } from '$lib/nft';
@@ -26,15 +26,13 @@
     nftIDToSend: null,
   };
 
-  const BASE_TOKEN_DECIMALS = 6;
-
   let isWithdrawing: boolean = false;
   let canSetAmountToWithdraw = true;
 
   $: updateCanWithdraw($withdrawStateStore.availableBaseTokens, {}, null);
   $: formattedBalance = (
     $withdrawStateStore.availableBaseTokens /
-    10 ** BASE_TOKEN_DECIMALS
+    10 ** L2_NATIVE_GAS_TOKEN_DECIMALS
   ).toFixed(2);
   $: isValidAddress = formInput.receiverAddress.length === Bech32AddressLength;
   $: canWithdraw =
@@ -42,7 +40,7 @@
     formInput.baseTokensToSend > 0 &&
     isValidAddress;
   $: $withdrawStateStore.isMetamaskConnected = window.ethereum
-    ? window.ethereum.isConnected()
+    ? window.ethereum.isMetamaskConnected
     : false;
 
   $: $withdrawStateStore, updateFormInput();
@@ -255,7 +253,7 @@
             $withdrawStateStore.availableBaseTokens - storageDeposit,
             0,
           )}
-          decimals={6}
+          decimals={L2_NATIVE_GAS_TOKEN_DECIMALS}
         />
         {#each $withdrawStateStore.availableNativeTokens as nativeToken}
           <AmountRangeInput

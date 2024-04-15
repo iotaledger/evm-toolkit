@@ -3,6 +3,7 @@ import { get } from 'svelte/store';
 import { appConfiguration, selectedNetwork } from '$lib/evm-toolkit';
 import { NotificationType, showNotification } from '$lib/notification';
 import { wTokenContractAddress } from '$lib/wrap';
+import { L2_NATIVE_GAS_TOKEN_DECIMALS } from '$lib/constants';
 
 export async function addWTokenToMetamask(): Promise<void> {
   const { ethereum } = window as any;
@@ -17,7 +18,7 @@ export async function addWTokenToMetamask(): Promise<void> {
             options: {
               address: wTokenContractAddress, // ERC20 token address
               symbol: get(appConfiguration)?.wTicker,
-              decimals: 18,
+              decimals: L2_NATIVE_GAS_TOKEN_DECIMALS,
             },
           },
         });

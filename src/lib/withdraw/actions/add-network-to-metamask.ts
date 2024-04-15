@@ -2,6 +2,7 @@ import { get } from 'svelte/store';
 
 import { selectedNetwork, appConfiguration } from '$lib/evm-toolkit';
 import { NotificationType, showNotification } from '$lib/notification';
+import { L2_NATIVE_GAS_TOKEN_DECIMALS } from '$lib/constants';
 
 export async function addSelectedNetworkToMetamask(): Promise<void> {
     const { ethereum } = window as any;
@@ -16,9 +17,9 @@ export async function addSelectedNetworkToMetamask(): Promise<void> {
                             chainId: `0x${$selectedNetwork.chainID?.toString(16)}`,
                             chainName: $selectedNetwork.text,
                             nativeCurrency: {
-                                name: get(appConfiguration).ticker,
-                                symbol: get(appConfiguration).ticker,
-                                decimals: 18,
+                            name: get(appConfiguration).ticker,
+                            symbol: get(appConfiguration).ticker,
+                                decimals: L2_NATIVE_GAS_TOKEN_DECIMALS,
                             },
                             ...($selectedNetwork.networkUrl && { rpcUrls: [$selectedNetwork.networkUrl] }),
                             ...($selectedNetwork.blockExplorer && { blockExplorerUrls: [$selectedNetwork.blockExplorer] }),
