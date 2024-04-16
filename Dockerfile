@@ -9,7 +9,7 @@ RUN yarn
 
 COPY . ./
 
-RUN yarn run build --prod
+RUN yarn run build
 
 FROM nginx:1.23-alpine
 COPY --from=build /app/build /usr/share/nginx/html
