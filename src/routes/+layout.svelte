@@ -7,7 +7,6 @@
     fetchConfiguredNetworks,
     networks,
   } from '$lib/evm-toolkit';
-
   import '../app.scss';
 
   let isNetworkLoaded = false;
@@ -53,6 +52,10 @@
     }
   }
 </script>
+
+<svelte:head>
+  <title>{$appConfiguration ? ($appConfiguration?.theme === Theme.IOTA ? 'IOTA EVM' : 'Shimmer EVM') : 'EVM'} Toolkit</title>
+</svelte:head>
 
 {#if isNetworkLoaded}
   <Navbar />
