@@ -22,8 +22,8 @@ export const APP_CONFIGURATIONS: Record<ChainReference, IAppConfiguration> = {
     },
     [ChainReference.ShimmerEVMTestnet]: {
         theme: Theme.Shimmer,
-        ticker: 'RMS',
-        wTicker: 'wRMS',
+        ticker: 'SMR',
+        wTicker: 'wSMR',
         bech32Hrp: 'rms',
         logo: "shimmer.svg",
         favicon: "shimmer-fav.ico",
