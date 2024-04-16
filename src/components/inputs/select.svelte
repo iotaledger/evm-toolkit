@@ -57,6 +57,7 @@
       @apply inline-block;
       @apply p-1;
       @apply rotate-45;
+      @apply border-action-primary;
     }
   }
 </style>
