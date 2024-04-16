@@ -25,24 +25,24 @@
       word-break: break-word;
     }
     &.success {
-      @apply bg-shimmer-background-success;
+      @apply bg-background-success;
       notification-message,
       button {
-        @apply text-shimmer-action-primary;
+        @apply text-action-primary;
       }
     }
     &.error {
-      @apply bg-shimmer-background-error;
+      @apply bg-background-error;
       notification-message,
       button {
-        @apply text-shimmer-text-error;
+        @apply text-color-error;
       }
     }
     &.warning {
-      @apply bg-shimmer-background-warning;
+      @apply bg-background-warning;
       notification-message,
       button {
-        @apply text-shimmer-text-secondary;
+        @apply text-color-secondary;
       }
     }
   }

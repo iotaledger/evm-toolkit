@@ -1,40 +1,35 @@
 <script lang="ts">
   import { Box, Tabs } from '$components';
-  import { selectedNetwork } from '$lib/evm-toolkit';
+  import { Feature, appConfiguration, selectedNetwork } from '$lib/evm-toolkit';
   import { onMount } from 'svelte';
   import { FaucetSection, WithdrawSection, WrapSection } from './sections';
 
-  const EVM_TABS = [
+  const APP_TABS = [
     {
-      label: 'Withdraw',
-      value: 1,
-      component: WithdrawSection,
-    },
-    {
-      label: 'Wrap',
-      value: 2,
-      component: WrapSection,
-    },
-  ];
-  const TESTNET_TABS = [
-    {
+      feature: Feature.Faucet,
       label: 'Faucet',
-      value: 1,
       component: FaucetSection,
     },
     {
+      feature: Feature.Withdraw,
       label: 'Withdraw',
-      value: 2,
       component: WithdrawSection,
     },
     {
+      feature: Feature.Wrap,
       label: 'Wrap',
-      value: 3,
       component: WrapSection,
     },
   ];
 
-  $: tabs = $selectedNetwork?.faucetEndpoint ? TESTNET_TABS : EVM_TABS;
+  $: activeTabs = APP_TABS.filter(
+    tab =>
+      $appConfiguration?.features?.includes(tab.feature) ||
+      (tab.feature === Feature.Faucet && $selectedNetwork?.faucetEndpoint),
+  ).map((tab, index) => ({
+    ...tab,
+    value: index + 1,
+  }));
 
   let mounted = false;
   onMount(() => {
@@ -45,7 +40,7 @@
 <section class="max-w-2xl w-full">
   <Box>
     {#if mounted}
-      <Tabs {tabs} />
+      <Tabs tabs={activeTabs} />
     {/if}
   </Box>
 </section>

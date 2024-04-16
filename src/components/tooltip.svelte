@@ -55,9 +55,9 @@
       @apply opacity-100;
     }
     tooltip-text {
-      @apply text-shimmer-action-primary;
+      @apply text-action-primary;
       @apply fixed;
-      @apply bg-shimmer-background;
+      @apply bg-background-primary;
       @apply rounded;
       @apply flex-nowrap;
       @apply text-sm;

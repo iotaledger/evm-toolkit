@@ -8,6 +8,6 @@
   dot-component {
     @apply block w-2 h-2;
     @apply rounded-full;
-    @apply bg-shimmer-action-primary;
+    @apply bg-action-primary;
   }
 </style>

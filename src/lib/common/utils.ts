@@ -1,3 +1,5 @@
+import { ChainReference } from "$lib/evm-toolkit";
+
 export function handleEnterKeyDown(
   event: KeyboardEvent,
   callback: () => void,
@@ -48,4 +50,16 @@ export function generateRandomId(): string {
     }
     return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
   });
+}
+
+export function getBech32AddressLengthFromChain(chain: ChainReference): number {
+  switch (chain) {
+    case ChainReference.IOTAEVM:
+      return 64;
+    case ChainReference.ShimmerEVM:
+    case ChainReference.ShimmerEVMTestnet:
+      return 63;
+    default:
+      return 64;
+  }
 }

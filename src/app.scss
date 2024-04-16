@@ -1,4 +1,6 @@
 @import "@fontsource/barlow";
+@import "themes/iota-theme.scss";
+@import "themes/shimmer-theme.scss";
 
 @tailwind base;
 @tailwind components;
@@ -16,9 +18,8 @@ body {
   min-height: 100vh;
   font-family: "Barlow";
   @apply text-base;
-  @apply text-white;
+  @apply text-color-default;
   @apply relative;
-  @apply bg-shimmer-background;
   @apply relative z-0;
 }
 

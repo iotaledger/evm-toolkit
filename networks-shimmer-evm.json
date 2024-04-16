@@ -1,0 +1,23 @@
+[
+    {
+        "id": 0,
+        "text": "ShimmerEVM",
+        "apiEndpoint": "https://api.shimmer.network",
+        "chainAddress": "smr1prxvwqvwf7nru5q5xvh5thwg54zsm2y4wfnk6yk56hj3exxkg92mx20wl3s",
+        "chainID": 148,
+        "blockExplorer": "https://explorer.evm.shimmer.network",
+        "networkUrl": "https://json-rpc.evm.shimmer.network",
+        "chainRef": "shimmer-evm"
+    },
+    {
+        "id": 1,
+        "text": "Custom Network",
+        "apiEndpoint": "http://localhost:14265",
+        "faucetEndpoint": "http://localhost:8091",
+        "chainAddress": "tst1pz0kc4urqxf4vh6c556gnr6uwmkwz5ye98vucakgafyneed4gft322s3gf0",
+        "chainID": 1074,
+        "blockExplorer": "",
+        "networkUrl": "",
+        "chainRef": "shimmer-evm"
+    }
+]

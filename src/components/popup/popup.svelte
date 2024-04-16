@@ -74,7 +74,7 @@
     @apply p-6;
     @apply flex flex-col;
     @apply w-11/12 md:w-full;
-    @apply bg-shimmer-background;
+    @apply bg-background-primary;
     @apply rounded-xl;
     @apply z-50;
     max-width: 500px;

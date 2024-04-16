@@ -1,12 +1,10 @@
 <script lang="ts">
   import { chainId, connected, selectedAccount } from 'svelte-web3';
-
   import { AmountRangeInput, Button, Input, Select } from '$components';
-
-  import { truncateText } from '$lib/common';
+  import { getBech32AddressLengthFromChain, truncateText } from '$lib/common';
   import { InputType } from '$lib/common/enums';
-  import { L2_NATIVE_GAS_TOKEN_DECIMALS, Bech32AddressLength } from '$lib/constants';
-  import { nodeClient, selectedNetwork } from '$lib/evm-toolkit';
+  import { L2_NATIVE_GAS_TOKEN_DECIMALS } from '$lib/constants';
+  import { appConfiguration, nodeClient, selectedNetwork } from '$lib/evm-toolkit';
   import type { INativeToken } from '$lib/native-token';
   import type { INFT } from '$lib/nft';
   import { NotificationType, showNotification } from '$lib/notification';
@@ -14,7 +12,6 @@
   import {
     connectToWallet,
     pollBalance,
-    randomBech32Address,
     storageDeposit,
     withdrawStateStore,
   } from '$lib/withdraw';
@@ -34,18 +31,17 @@
     $withdrawStateStore.availableBaseTokens /
     10 ** L2_NATIVE_GAS_TOKEN_DECIMALS
   ).toFixed(2);
-  $: isValidAddress = formInput.receiverAddress.length == Bech32AddressLength;
+  $: isValidAddress = formInput.receiverAddress.length === getBech32AddressLengthFromChain($selectedNetwork.chainRef);
   $: canWithdraw =
-    $withdrawStateStore.availableBaseTokens > 0 &&
+    $withdrawStateStore?.availableBaseTokens > 0 &&
     formInput.baseTokensToSend > 0 &&
     isValidAddress;
-  $: canWithdrawEverything = isValidAddress;
   $: $withdrawStateStore.isMetamaskConnected = window.ethereum
     ? window.ethereum.isMetamaskConnected
     : false;
 
   $: $withdrawStateStore, updateFormInput();
-  $: placeholderHrp = $selectedNetwork?.faucetEndpoint ? 'rms/tst/...' : 'smr';
+  $: placeholderHrp = `${$appConfiguration?.bech32Hrp.toLowerCase()}...`;
 
   function updateFormInput() {
     if (formInput.baseTokensToSend > $withdrawStateStore.availableBaseTokens) {
@@ -246,7 +242,7 @@
       <div class="mb-2">Tokens to send</div>
       <info-box class="flex flex-col space-y-4 max-h-96 overflow-auto">
         <AmountRangeInput
-          label="SMR Token:"
+          label="{$appConfiguration?.ticker} Token:"
           bind:value={formInput.baseTokensToSend}
           disabled={!canSetAmountToWithdraw}
           min={storageDeposit}
@@ -293,13 +289,13 @@
     @apply w-full;
     @apply flex;
     @apply justify-between;
-    @apply bg-shimmer-background-tertiary;
+    @apply bg-background-tertiary;
     @apply rounded-xl;
     @apply p-4;
   }
   info-item-title {
     @apply text-xs;
-    @apply text-shimmer-text-secondary;
+    @apply text-color-secondary;
   }
 
   info-item-value {

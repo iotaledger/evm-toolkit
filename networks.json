@@ -1,13 +1,14 @@
 [
     {
         "id": 0,
-        "text": "ShimmerEVM Testnet",
+        "text": "ShimmerEVM (Testnet)",
         "apiEndpoint": "https://evm-toolkit-api.testnet.shimmer.network",
         "faucetEndpoint": "https://faucet.testnet.shimmer.network",
-        "chainAddress": "rms1pr75wa5xuepg2hew44vnr28wz5h6n6x99zptk2g68sp2wuu2karywgrztx3",
+        "chainAddress": "rms1ppp00k5mmd2m8my8ukkp58nd3rskw6rx8l09aj35984k74uuc5u2cywn3ex",
         "chainID": 1073,
         "blockExplorer": "https://explorer.evm.testnet.shimmer.network",
-        "networkUrl": "https://json-rpc.evm.testnet.shimmer.network"
+        "networkUrl": "https://json-rpc.evm.testnet.shimmer.network",
+        "chainRef": "shimmer-evm-testnet"
     },
     {
         "id": 1,
@@ -17,6 +18,7 @@
         "chainAddress": "tst1pz0kc4urqxf4vh6c556gnr6uwmkwz5ye98vucakgafyneed4gft322s3gf0",
         "chainID": 1074,
         "blockExplorer": "",
-        "networkUrl": ""
+        "networkUrl": "",
+        "chainRef": "shimmer-evm-testnet"
     }
 ]

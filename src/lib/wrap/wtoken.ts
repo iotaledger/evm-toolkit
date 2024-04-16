@@ -1,4 +1,3 @@
-import type Web3 from 'web3';
 import type { Contract } from 'web3-eth-contract';
 
 export interface ITransactionResponse {
@@ -16,44 +15,44 @@ export interface ITransactionResponse {
   events: unknown;
 }
 
-export class wSMR {
+export class wToken {
   private readonly contract: Contract;
 
   constructor(contract: Contract) {
     this.contract = contract;
   }
 
-  public async estimateGasDeposit(smrTokens: BigInt) {
+  public async estimateGasDeposit(baseToken: BigInt) {
     const estimation = await this.contract.methods
       .deposit()
-      .estimateGas({ value: smrTokens });
+      .estimateGas({ value: baseToken });
 
     return estimation;
   }
 
-  public async estimateGasWithdraw(wsmrTokens: BigInt) {
+  public async estimateGasWithdraw(wTokens: BigInt) {
     const estimation = await this.contract.methods
-      .withdraw(wsmrTokens)
+      .withdraw(wTokens)
       .estimateGas();
 
     return estimation;
   }
 
-  public async deposit(smrTokens: BigInt) {
-    const estimation = await this.estimateGasDeposit(smrTokens);
+  public async deposit(baseToken: BigInt) {
+    const estimation = await this.estimateGasDeposit(baseToken);
 
     const result = await this.contract.methods.deposit().send({
       gas: estimation,
-      value: smrTokens,
+      value: baseToken,
     });
 
     return result as ITransactionResponse;
   }
 
-  public async withdraw(wsmrTokens: BigInt) {
-    const estimation = await this.estimateGasWithdraw(wsmrTokens);
+  public async withdraw(wTokens: BigInt) {
+    const estimation = await this.estimateGasWithdraw(wTokens);
 
-    const result = await this.contract.methods.withdraw(wsmrTokens).send({
+    const result = await this.contract.methods.withdraw(wTokens).send({
       gas: estimation,
     });
 

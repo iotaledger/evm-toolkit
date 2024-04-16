@@ -1,21 +1,18 @@
 import { defaultEvmStores, selectedAccount, web3 } from 'svelte-web3';
 import { get } from 'svelte/store';
-
 import { ISCMagic } from '$lib/iscmagic';
 import { iscAbi, iscContractAddress } from '$lib/withdraw';
-
-import { wSMR } from '$lib/wsmr';
-import { wSMRAbi, wSMRContractAddress } from '$lib/wsmr';
-
+import { wToken } from '$lib/wrap';
+import { wSMRAbi, wIOTAAbi, wSMRContractAddress, wIOTAContractAddress } from '$lib/wrap';
 import { addSelectedNetworkToMetamask, subscribeBalance } from '.';
 import { updateWithdrawStateStore, withdrawStateStore } from '../stores';
+import { appConfiguration } from '$lib/evm-toolkit';
 
 export async function connectToWallet() {
   updateWithdrawStateStore({ isLoading: true });
-
+  const wTokenContractAddress = get(appConfiguration)?.wTicker === 'wIOTA' ? wIOTAContractAddress : wSMRContractAddress;
   try {
     await defaultEvmStores.setProvider();
-
     await addSelectedNetworkToMetamask();
 
     const evmChainID = await get(web3).eth.getChainId();
@@ -25,20 +22,19 @@ export async function connectToWallet() {
     const contract = new EthContract(iscAbi, iscContractAddress, {
       from: get(selectedAccount),
     });
-
     updateWithdrawStateStore({ contract });
 
     const iscMagic = new ISCMagic(get(withdrawStateStore)?.contract);
     updateWithdrawStateStore({ iscMagic });
 
-    const contractWSMR = new EthContract(wSMRAbi, wSMRContractAddress, {
+    const selectedContractAbi = get(appConfiguration)?.wTicker === 'wSMR' ? wSMRAbi : wIOTAAbi;
+    const contractWToken = new EthContract(selectedContractAbi, wTokenContractAddress, {
       from: get(selectedAccount),
     });
-
-    updateWithdrawStateStore({ contractWSMR });
-
-    const wsmrContractObj = new wSMR(get(withdrawStateStore)?.contractWSMR);
-    updateWithdrawStateStore({ wsmrContractObj });
+    updateWithdrawStateStore({ contractWToken });
+    
+    const wTokenContractObj = new wToken(get(withdrawStateStore)?.contractWToken);
+    updateWithdrawStateStore({ wTokenContractObj });
 
     await subscribeBalance();
   } catch (ex) {

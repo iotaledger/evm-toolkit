@@ -88,14 +88,14 @@
       -webkit-appearance: none; /* Override default look */
       appearance: none;
       margin-top: -4px; /* Centers thumb on the track */
-      background-color: #00f5dd;
+      @apply bg-action-primary;
       border-radius: 0.5rem;
       height: 1rem;
       width: 1rem;
     }
 
     &:focus::-webkit-slider-thumb {
-      outline: 3px solid #00f5dd;
+      outline: 3px solid var(--action-primary);
       outline-offset: 0.125rem;
     }
 
@@ -109,7 +109,7 @@
 
     /* slider thumb */
     &::-moz-range-thumb {
-      background-color: #00f5dd;
+      @apply bg-action-primary;
       border: none; /*Removes extra border that FF applies*/
       border-radius: 0.5rem;
       height: 1rem;
@@ -117,14 +117,14 @@
     }
 
     &:focus::-moz-range-thumb {
-      outline: 3px solid #00f5dd;
+      outline: 3px solid var(--action-primary);
       outline-offset: 0.125rem;
     }
   }
   input[type='text'] {
     &::placeholder {
       @apply text-xs;
-      @apply text-shimmer-text-secondary;
+      @apply text-color-secondary;
     }
   }
 </style>
