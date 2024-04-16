@@ -2,10 +2,12 @@
   import { onMount } from 'svelte';
   import { Navbar, NotificationManager, PopupManager } from '$components';
   import {
+    type INetwork,
     Theme,
     appConfiguration,
     fetchConfiguredNetworks,
     networks,
+    selectedNetwork
   } from '$lib/evm-toolkit';
   import '../app.scss';
 
@@ -51,10 +53,18 @@
       setTheme(configuredTheme);
     }
   }
+
+  function getTitleBasedOnSelectedNetwork(_selectedNetwork: INetwork | undefined) : string {
+    if (_selectedNetwork) {
+      return `${_selectedNetwork.text} Toolkit`;
+    } else {
+      return 'EVM Toolkit'
+    }
+  }
 </script>
 
 <svelte:head>
-  <title>{$appConfiguration ? ($appConfiguration?.theme === Theme.IOTA ? 'IOTA EVM' : 'Shimmer EVM') : 'EVM'} Toolkit</title>
+  <title>{getTitleBasedOnSelectedNetwork($selectedNetwork)}</title>
 </svelte:head>
 
 {#if isNetworkLoaded}
