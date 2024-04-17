@@ -1,9 +1,9 @@
 import { get } from 'svelte/store';
 
+import { L2_NATIVE_GAS_TOKEN_DECIMALS } from '$lib/constants';
 import { appConfiguration, selectedNetwork } from '$lib/evm-toolkit';
 import { NotificationType, showNotification } from '$lib/notification';
-import { wIOTAContractAddress, wSMRContractAddress } from '$lib/wrap';
-import { L2_NATIVE_GAS_TOKEN_DECIMALS } from '$lib/constants';
+import { WTOKEN_CONTRACT_CHAIN_MAP } from '$lib/wrap';
 
 export async function addWTokenToMetamask(): Promise<void> {
   const { ethereum } = window as any;
@@ -16,7 +16,7 @@ export async function addWTokenToMetamask(): Promise<void> {
           params: {
             type: 'ERC20',
             options: {
-              address: get(appConfiguration)?.ticker === 'IOTA' ? wIOTAContractAddress : wSMRContractAddress, // ERC20 token address
+              address: WTOKEN_CONTRACT_CHAIN_MAP[$selectedNetwork?.chainRef],
               symbol: get(appConfiguration)?.wTicker,
               decimals: L2_NATIVE_GAS_TOKEN_DECIMALS,
             },

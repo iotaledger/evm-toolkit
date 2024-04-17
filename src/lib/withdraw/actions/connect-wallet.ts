@@ -1,16 +1,15 @@
-import { defaultEvmStores, selectedAccount, web3 } from 'svelte-web3';
-import { get } from 'svelte/store';
+import { appConfiguration, selectedNetwork } from '$lib/evm-toolkit';
 import { ISCMagic } from '$lib/iscmagic';
 import { iscAbi, iscContractAddress } from '$lib/withdraw';
-import { wToken } from '$lib/wrap';
-import { wSMRAbi, wIOTAAbi, wSMRContractAddress, wIOTAContractAddress } from '$lib/wrap';
+import { WTOKEN_CONTRACT_CHAIN_MAP, wIOTAAbi, wSMRAbi, wToken } from '$lib/wrap';
+import { defaultEvmStores, selectedAccount, web3 } from 'svelte-web3';
+import { get } from 'svelte/store';
 import { addSelectedNetworkToMetamask, subscribeBalance } from '.';
 import { updateWithdrawStateStore, withdrawStateStore } from '../stores';
-import { appConfiguration } from '$lib/evm-toolkit';
 
 export async function connectToWallet() {
   updateWithdrawStateStore({ isLoading: true });
-  const wTokenContractAddress = get(appConfiguration)?.wTicker === 'wIOTA' ? wIOTAContractAddress : wSMRContractAddress;
+  const wTokenContractAddress = WTOKEN_CONTRACT_CHAIN_MAP[get(selectedNetwork)?.chainRef];
   try {
     await defaultEvmStores.setProvider();
     await addSelectedNetworkToMetamask();
@@ -32,7 +31,7 @@ export async function connectToWallet() {
       from: get(selectedAccount),
     });
     updateWithdrawStateStore({ contractWToken });
-    
+
     const wTokenContractObj = new wToken(get(withdrawStateStore)?.contractWToken);
     updateWithdrawStateStore({ wTokenContractObj });
 
