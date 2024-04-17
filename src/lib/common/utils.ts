@@ -58,6 +58,7 @@ export function getBech32AddressLengthFromChain(chain: ChainReference): number {
       return 64;
     case ChainReference.ShimmerEVM:
     case ChainReference.ShimmerEVMTestnet:
+      case ChainReference.IOTAEVMTestnet:
       return 63;
     default:
       return 64;

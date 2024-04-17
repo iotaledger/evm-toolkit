@@ -15,7 +15,7 @@ export const APP_CONFIGURATIONS: Record<ChainReference, IAppConfiguration> = {
         theme: Theme.IOTA,
         ticker: 'IOTA',
         wTicker: 'wIOTA',
-        bech32Hrp: 'iota',
+        bech32Hrp: 'tst',
         logo: "iota_evm_testnet.svg",
         favicon: "iota-fav.ico",
         features: [Feature.Faucet, Feature.Withdraw, Feature.Wrap]
