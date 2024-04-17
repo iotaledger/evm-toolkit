@@ -7,7 +7,7 @@
     appConfiguration,
     fetchConfiguredNetworks,
     networks,
-    selectedNetwork
+    selectedNetwork,
   } from '$lib/evm-toolkit';
   import '../app.scss';
 
@@ -54,17 +54,25 @@
     }
   }
 
-  function getTitleBasedOnSelectedNetwork(_selectedNetwork: INetwork | undefined) : string {
+  function getTitleBasedOnSelectedNetwork(
+    _selectedNetwork: INetwork | undefined,
+  ): string {
     if (_selectedNetwork) {
       return `${_selectedNetwork.text} Toolkit`;
     } else {
-      return 'EVM Toolkit'
+      return 'EVM Toolkit';
     }
   }
 </script>
 
 <svelte:head>
   <title>{getTitleBasedOnSelectedNetwork($selectedNetwork)}</title>
+  <link
+    rel="icon"
+    href="/{$appConfiguration?.theme === Theme.Shimmer
+      ? 'shimmer-fav.ico'
+      : 'iota-fav.ico'}"
+  />
 </svelte:head>
 
 {#if isNetworkLoaded}

@@ -1,13 +1,16 @@
 html[data-theme="iota"] {
   --action-primary: #108cff;
   --action-hover: #108cffe6;
-  --action-disabled: #7587AB;
+  --action-disabled: #7587ab;
   --background-primary: #fff;
-  --background-secondary: #F2F9FF;
-  --background-tertiary: #E4EBFA;
+  --background-secondary: #f2f9ff;
+  --background-tertiary: #e4ebfa;
   --background-tertiary-hover: #e4ebfae6;
-  --color-error: #FF6755;
+  --color-error: #ff6755;
   --color-primary: #fff;
   --color-secondary: #7587ab;
   --color-default: #000000;
+  --background-error: rgba(255, 103, 85, 0.15);
+  --background-success: rgba(16, 140, 255, 0.15);
+  --background-warning: rgba(117, 135, 171, 0.15);
 }
