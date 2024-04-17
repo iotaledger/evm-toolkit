@@ -15,9 +15,9 @@ module.exports = {
         'color-primary': 'var(--color-primary)',
         'color-secondary': 'var(--color-secondary)',
         'color-default': 'var(--color-default)',
-        'background-error': '#e01a4f29',
-        'background-success': 'rgba(0, 245, 221, 0.08)',
-        'background-warning': 'rgba(255, 255, 255, 0.078)'
+        'background-error': 'var(--background-error)',
+        'background-success': 'var(--background-success)',
+        'background-warning': 'var(--background-warning)',
       },
     },
     plugins: [],
