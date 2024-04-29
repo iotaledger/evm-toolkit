@@ -132,6 +132,7 @@
     }
 
     if (result.status) {
+      resetForm();
       showNotification({
         type: NotificationType.Success,
         message: `Withdraw request sent. BlockIndex: ${result.blockNumber}`,
@@ -178,10 +179,6 @@
       nativeTokensToSend,
       formInput.nftIDToSend,
     );
-
-    if (!isWithdrawing) {
-      resetForm();
-    }
   }
 
   function sleep(ms) {
