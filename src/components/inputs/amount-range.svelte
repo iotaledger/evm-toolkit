@@ -78,7 +78,7 @@
     /******** Chrome, Safari, Opera and Edge Chromium styles ********/
     /* slider track */
     &::-webkit-slider-runnable-track {
-      background-color: #061928;
+      @apply bg-background-secondary;
       border-radius: 0.5rem;
       height: 8px;
     }
