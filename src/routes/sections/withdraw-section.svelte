@@ -223,7 +223,7 @@
 
   function resetForm(): void {
     formInput.receiverAddress = '';
-    formInput.baseTokensToSend = 0;
+    formInput.baseTokensToSend = storageDeposit;
     formInput.nativeTokensToSend = {};
     formInput.nftIDToSend = null;
   }
