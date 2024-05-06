@@ -4,7 +4,11 @@
   import { getBech32AddressLengthFromChain, truncateText } from '$lib/common';
   import { InputType } from '$lib/common/enums';
   import { L2_NATIVE_GAS_TOKEN_DECIMALS } from '$lib/constants';
-  import { appConfiguration, nodeClient, selectedNetwork } from '$lib/evm-toolkit';
+  import {
+    appConfiguration,
+    nodeClient,
+    selectedNetwork,
+  } from '$lib/evm-toolkit';
   import type { INativeToken } from '$lib/native-token';
   import type { INFT } from '$lib/nft';
   import { NotificationType, showNotification } from '$lib/notification';
@@ -31,7 +35,9 @@
     $withdrawStateStore.availableBaseTokens /
     10 ** L2_NATIVE_GAS_TOKEN_DECIMALS
   ).toFixed(2);
-  $: isValidAddress = formInput.receiverAddress.length === getBech32AddressLengthFromChain($selectedNetwork.chainRef);
+  $: isValidAddress =
+    formInput.receiverAddress.length ===
+    getBech32AddressLengthFromChain($selectedNetwork.chainRef);
   $: canWithdraw =
     $withdrawStateStore?.availableBaseTokens > 0 &&
     formInput.baseTokensToSend > 0 &&
@@ -126,6 +132,7 @@
     }
 
     if (result.status) {
+      resetForm();
       showNotification({
         type: NotificationType.Success,
         message: `Withdraw request sent. BlockIndex: ${result.blockNumber}`,
@@ -213,6 +220,13 @@
       };
     });
   };
+
+  function resetForm(): void {
+    formInput.receiverAddress = '';
+    formInput.baseTokensToSend = storageDeposit;
+    formInput.nativeTokensToSend = {};
+    formInput.nftIDToSend = null;
+  }
 </script>
 
 <withdraw-component class="flex flex-col space-y-6 mt-6">
