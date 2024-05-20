@@ -139,7 +139,7 @@
     }
 
     if (result.status) {
-      resetForm();
+      resetView();
       showNotification({
         type: NotificationType.Success,
         message: `Withdraw request sent. BlockIndex: ${result.blockNumber}`,
@@ -228,12 +228,15 @@
     });
   };
 
-  function resetForm(): void {
+  let resetReactiveVariable = 0; // This is a hack to force a re-render of the component
+  function resetView(): void {
     formInput.receiverAddress = '';
     formInput.baseTokensToSend = storageDeposit;
     formInput.nativeTokensToSend = {};
     formInput.nftIDToSend = null;
     formInput = formInput;
+
+    resetReactiveVariable++;
   }
 </script>
 
@@ -263,17 +266,19 @@
     <tokens-to-send-wrapper>
       <div class="mb-2">Tokens to send</div>
       <info-box class="flex flex-col space-y-4 max-h-96 overflow-auto">
-        <AmountRangeInput
-          label="{$appConfiguration?.ticker} Token:"
-          bind:value={formInput.baseTokensToSend}
-          disabled={!canSetAmountToWithdraw}
-          min={storageDepositAdjustedDecimals}
-          max={Math.max(
-            $withdrawStateStore.availableBaseTokens - storageDeposit,
-            0,
-          )}
-          decimals={L2_NATIVE_GAS_TOKEN_DECIMALS}
-        />
+        {#key resetReactiveVariable}
+          <AmountRangeInput
+            label="{$appConfiguration?.ticker} Token:"
+            bind:value={formInput.baseTokensToSend}
+            disabled={!canSetAmountToWithdraw}
+            min={storageDepositAdjustedDecimals}
+            max={Math.max(
+              $withdrawStateStore.availableBaseTokens - storageDeposit,
+              0,
+            )}
+            decimals={L2_NATIVE_GAS_TOKEN_DECIMALS}
+          />
+        {/key}
         {#each $withdrawStateStore.availableNativeTokens as nativeToken}
           <AmountRangeInput
             bind:value={formInput.nativeTokensToSend[nativeToken.id]}
