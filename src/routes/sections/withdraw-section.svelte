@@ -3,7 +3,10 @@
   import { AmountRangeInput, Button, Input, Select } from '$components';
   import { getBech32AddressLengthFromChain, truncateText } from '$lib/common';
   import { InputType } from '$lib/common/enums';
-  import { L2_NATIVE_GAS_TOKEN_DECIMALS } from '$lib/constants';
+  import {
+    L2_NATIVE_GAS_TOKEN_DECIMALS,
+    L1_BASE_TOKEN_DECIMALS,
+  } from '$lib/constants';
   import {
     appConfiguration,
     nodeClient,
@@ -20,7 +23,7 @@
     withdrawStateStore,
   } from '$lib/withdraw';
 
-  const formInput: WithdrawFormInput = {
+  let formInput: WithdrawFormInput = {
     receiverAddress: '',
     baseTokensToSend: storageDeposit,
     nativeTokensToSend: {},
@@ -48,6 +51,10 @@
 
   $: $withdrawStateStore, updateFormInput();
   $: placeholderHrp = `${$appConfiguration?.bech32Hrp.toLowerCase()}...`;
+
+  $: storageDepositAdjustedDecimals =
+    storageDeposit *
+    10 ** (L2_NATIVE_GAS_TOKEN_DECIMALS - L1_BASE_TOKEN_DECIMALS);
 
   function updateFormInput() {
     if (formInput.baseTokensToSend > $withdrawStateStore.availableBaseTokens) {
@@ -226,6 +233,7 @@
     formInput.baseTokensToSend = storageDeposit;
     formInput.nativeTokensToSend = {};
     formInput.nftIDToSend = null;
+    formInput = formInput;
   }
 </script>
 
@@ -259,7 +267,7 @@
           label="{$appConfiguration?.ticker} Token:"
           bind:value={formInput.baseTokensToSend}
           disabled={!canSetAmountToWithdraw}
-          min={storageDeposit}
+          min={storageDepositAdjustedDecimals}
           max={Math.max(
             $withdrawStateStore.availableBaseTokens - storageDeposit,
             0,
