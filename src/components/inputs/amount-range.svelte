@@ -1,8 +1,10 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
+
   export let decimals: number = 0;
   export let min: number = 0;
   export let max: number = 0;
-  export let value: number = 0;
+  export let value: number;
   export let disabled: boolean = false;
   export let label: string = '';
   export let valid: boolean = true;
@@ -14,6 +16,11 @@
   $: minValueFormatted = min / 10 ** decimals;
   $: maxValueFormatted = max / 10 ** decimals;
   $: valid = value >= min && value <= max;
+
+  onMount(() => {
+    value = Math.max(min, Math.min(max, value));
+    valueFormatted = value / 10 ** decimals;
+  });
 
   function handleRangeChange(event): void {
     value = event.target.value;

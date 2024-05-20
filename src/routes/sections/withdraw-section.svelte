@@ -3,7 +3,10 @@
   import { AmountRangeInput, Button, Input, Select } from '$components';
   import { getBech32AddressLengthFromChain, truncateText } from '$lib/common';
   import { InputType } from '$lib/common/enums';
-  import { L2_NATIVE_GAS_TOKEN_DECIMALS } from '$lib/constants';
+  import {
+    L2_NATIVE_GAS_TOKEN_DECIMALS,
+    L1_BASE_TOKEN_DECIMALS,
+  } from '$lib/constants';
   import {
     appConfiguration,
     nodeClient,
@@ -20,7 +23,7 @@
     withdrawStateStore,
   } from '$lib/withdraw';
 
-  const formInput: WithdrawFormInput = {
+  let formInput: WithdrawFormInput = {
     receiverAddress: '',
     baseTokensToSend: storageDeposit,
     nativeTokensToSend: {},
@@ -48,6 +51,10 @@
 
   $: $withdrawStateStore, updateFormInput();
   $: placeholderHrp = `${$appConfiguration?.bech32Hrp.toLowerCase()}...`;
+
+  $: storageDepositAdjustedDecimals =
+    storageDeposit *
+    10 ** (L2_NATIVE_GAS_TOKEN_DECIMALS - L1_BASE_TOKEN_DECIMALS);
 
   function updateFormInput() {
     if (formInput.baseTokensToSend > $withdrawStateStore.availableBaseTokens) {
@@ -132,7 +139,7 @@
     }
 
     if (result.status) {
-      resetForm();
+      resetView();
       showNotification({
         type: NotificationType.Success,
         message: `Withdraw request sent. BlockIndex: ${result.blockNumber}`,
@@ -221,11 +228,15 @@
     });
   };
 
-  function resetForm(): void {
+  let resetReactiveVariable = 0; // This is a hack to force a re-render of the component
+  function resetView(): void {
     formInput.receiverAddress = '';
     formInput.baseTokensToSend = storageDeposit;
     formInput.nativeTokensToSend = {};
     formInput.nftIDToSend = null;
+    formInput = formInput;
+
+    resetReactiveVariable++;
   }
 </script>
 
@@ -255,17 +266,19 @@
     <tokens-to-send-wrapper>
       <div class="mb-2">Tokens to send</div>
       <info-box class="flex flex-col space-y-4 max-h-96 overflow-auto">
-        <AmountRangeInput
-          label="{$appConfiguration?.ticker} Token:"
-          bind:value={formInput.baseTokensToSend}
-          disabled={!canSetAmountToWithdraw}
-          min={storageDeposit}
-          max={Math.max(
-            $withdrawStateStore.availableBaseTokens - storageDeposit,
-            0,
-          )}
-          decimals={L2_NATIVE_GAS_TOKEN_DECIMALS}
-        />
+        {#key resetReactiveVariable}
+          <AmountRangeInput
+            label="{$appConfiguration?.ticker} Token:"
+            bind:value={formInput.baseTokensToSend}
+            disabled={!canSetAmountToWithdraw}
+            min={storageDepositAdjustedDecimals}
+            max={Math.max(
+              $withdrawStateStore.availableBaseTokens - storageDeposit,
+              0,
+            )}
+            decimals={L2_NATIVE_GAS_TOKEN_DECIMALS}
+          />
+        {/key}
         {#each $withdrawStateStore.availableNativeTokens as nativeToken}
           <AmountRangeInput
             bind:value={formInput.nativeTokensToSend[nativeToken.id]}
