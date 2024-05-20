@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, afterUpdate } from 'svelte';
+  import { onMount } from 'svelte';
 
   export let decimals: number = 0;
   export let min: number = 0;
@@ -18,12 +18,6 @@
   $: valid = value >= min && value <= max;
 
   onMount(() => {
-    value = Math.max(min, Math.min(max, value));
-    valueFormatted = value / 10 ** decimals;
-  });
-
-  // Make sure the component updates the internal state when value prop changes
-  afterUpdate(() => {
     value = Math.max(min, Math.min(max, value));
     valueFormatted = value / 10 ** decimals;
   });
