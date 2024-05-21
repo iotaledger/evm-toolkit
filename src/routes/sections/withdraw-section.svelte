@@ -32,7 +32,8 @@
   };
 
   let isWithdrawing: boolean = false;
-  let isBaseTokenValid: boolean = false;
+  let isBaseTokenValueValid: boolean = true;
+  let isNativeTokenValueValid: boolean = true;
   let gasNeeded: number | undefined;
 
   $: updateCanWithdraw($withdrawStateStore.availableBaseTokens, {}, null);
@@ -47,7 +48,8 @@
     $withdrawStateStore?.availableBaseTokens > 0 &&
     formInput.baseTokensToSend > 0 &&
     isValidAddress &&
-    isBaseTokenValid;
+    isBaseTokenValueValid &&
+    isNativeTokenValueValid;
   $: $withdrawStateStore.isMetamaskConnected = window.ethereum
     ? window.ethereum.isMetamaskConnected
     : false;
@@ -273,7 +275,7 @@
           <AmountRangeInput
             label="{$appConfiguration?.ticker} Token:"
             bind:value={formInput.baseTokensToSend}
-            bind:valid={isBaseTokenValid}
+            bind:valid={isBaseTokenValueValid}
             disabled={!(
               $withdrawStateStore?.availableBaseTokens >
               Number(gasNeeded) + 1
@@ -292,6 +294,7 @@
             label="{nativeToken?.metadata?.name ?? ''} Token:"
             decimals={nativeToken?.metadata?.decimals || 0}
             max={Number(nativeToken.amount)}
+            bind:valid={isNativeTokenValueValid}
           />
         {/each}
       </info-box>
