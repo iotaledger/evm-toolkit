@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { chainId, connected, selectedAccount } from 'svelte-web3';
   import { AmountRangeInput, Button, Input, Select } from '$components';
   import { getBech32AddressLengthFromChain, truncateText } from '$lib/common';
   import { InputType } from '$lib/common/enums';
   import {
-    L2_NATIVE_GAS_TOKEN_DECIMALS,
     L1_BASE_TOKEN_DECIMALS,
+    L2_NATIVE_GAS_TOKEN_DECIMALS,
   } from '$lib/constants';
   import {
     appConfiguration,
@@ -19,9 +18,11 @@
   import {
     connectToWallet,
     pollBalance,
+    randomBech32Address,
     storageDeposit,
     withdrawStateStore,
   } from '$lib/withdraw';
+  import { chainId, connected, selectedAccount } from 'svelte-web3';
 
   let formInput: WithdrawFormInput = {
     receiverAddress: '',
@@ -31,7 +32,9 @@
   };
 
   let isWithdrawing: boolean = false;
-  let canSetAmountToWithdraw = true;
+  let isBaseTokenValueValid: boolean = true;
+  let isNativeTokenValueValid: boolean = true;
+  let gasNeeded: number | undefined;
 
   $: updateCanWithdraw($withdrawStateStore.availableBaseTokens, {}, null);
   $: formattedBalance = (
@@ -44,7 +47,9 @@
   $: canWithdraw =
     $withdrawStateStore?.availableBaseTokens > 0 &&
     formInput.baseTokensToSend > 0 &&
-    isValidAddress;
+    isValidAddress &&
+    isBaseTokenValueValid &&
+    isNativeTokenValueValid;
   $: $withdrawStateStore.isMetamaskConnected = window.ethereum
     ? window.ethereum.isMetamaskConnected
     : false;
@@ -85,25 +90,25 @@
     nativeTokens: { [key: string]: number },
     nftID?: string,
   ) {
-    if (!$withdrawStateStore.iscMagic || !formInput.receiverAddress) {
-      return (canSetAmountToWithdraw = false);
+    if (!$withdrawStateStore.iscMagic) {
+      return;
     }
-
     const nativeTokensToSend = mapNativeToken(nativeTokens);
+    // If the receiver address is not set, we generate a random one to estimate the gas needed.
+    const receivedAddress = formInput.receiverAddress?.length
+      ? formInput.receiverAddress
+      : randomBech32Address($appConfiguration.bech32Hrp);
     try {
-      const gasNeeded = await $withdrawStateStore.iscMagic.estimateGas(
+      gasNeeded = await $withdrawStateStore.iscMagic.estimateGas(
         $nodeClient,
-        formInput.receiverAddress,
+        receivedAddress,
         baseTokens,
         nativeTokensToSend,
         nftID,
       );
-
-      canSetAmountToWithdraw =
-        $withdrawStateStore.availableBaseTokens > Number(gasNeeded) + 1;
     } catch (ex) {
+      gasNeeded = undefined;
       console.log(ex);
-      return (canSetAmountToWithdraw = false);
     }
   }
 
@@ -270,7 +275,11 @@
           <AmountRangeInput
             label="{$appConfiguration?.ticker} Token:"
             bind:value={formInput.baseTokensToSend}
-            disabled={!canSetAmountToWithdraw}
+            bind:valid={isBaseTokenValueValid}
+            disabled={!(
+              $withdrawStateStore?.availableBaseTokens >
+              Number(gasNeeded) + 1
+            )}
             min={storageDepositAdjustedDecimals}
             max={Math.max(
               $withdrawStateStore.availableBaseTokens - storageDeposit,
@@ -285,6 +294,7 @@
             label="{nativeToken?.metadata?.name ?? ''} Token:"
             decimals={nativeToken?.metadata?.decimals || 0}
             max={Number(nativeToken.amount)}
+            bind:valid={isNativeTokenValueValid}
           />
         {/each}
       </info-box>
