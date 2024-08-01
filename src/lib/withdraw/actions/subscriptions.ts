@@ -1,8 +1,14 @@
 import { clearIntervalAsync, setIntervalAsync } from 'set-interval-async';
+import { chainId, connected, selectedAccount } from 'svelte-web3';
 import { get } from 'svelte/store';
 
 import { updateWithdrawStateStore, withdrawStateStore } from '../stores';
 import { pollAccount } from './polls';
+
+
+import { selectedNetwork } from '$lib/evm-toolkit';
+import { NotificationType, showNotification } from '$lib/notification';
+import { disconnectWallet } from '.';
 
 export async function subscribeBalance() {
   await unsubscribeBalance();
@@ -27,4 +33,33 @@ export async function unsubscribeBalance() {
   updateWithdrawStateStore({
     balancePollingHandle: undefined,
   });
+}
+
+let connectedNetworkInterval: NodeJS.Timeout | null = null;
+export async function subscribeConnectedNetwork() {
+  connectedNetworkInterval = setInterval(async () => {
+    if (get(connected) || get(selectedAccount)) {
+      if (Number(get(chainId))?.toString() !== Number(get(selectedNetwork)?.chainID)?.toString()) {
+        try {
+          await disconnectWallet();
+        } catch (e) {
+          showNotification({
+            type: NotificationType.Error,
+            message: e,
+          });
+          console.error(e);
+        }
+      }
+    }
+  }, 1000);
+}
+
+export async function unsubscribeConnectedNetwork() {
+  if (connectedNetworkInterval) {
+    clearInterval(connectedNetworkInterval);
+  }
+}
+
+function big(arg0: number): any {
+  throw new Error('Function not implemented.');
 }

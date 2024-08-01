@@ -4,7 +4,7 @@ import { iscAbi, iscContractAddress } from '$lib/withdraw';
 import { WTOKEN_CONTRACT_CHAIN_MAP, wIOTAAbi, wSMRAbi, wToken } from '$lib/wrap';
 import { defaultEvmStores, selectedAccount, web3 } from 'svelte-web3';
 import { get } from 'svelte/store';
-import { addSelectedNetworkToMetamask, subscribeBalance } from '.';
+import { addSelectedNetworkToMetamask, subscribeBalance, subscribeConnectedNetwork } from '.';
 import { updateWithdrawStateStore, withdrawStateStore } from '../stores';
 
 export async function connectToWallet() {
@@ -35,6 +35,7 @@ export async function connectToWallet() {
     const wTokenContractObj = new wToken(get(withdrawStateStore)?.contractWToken);
     updateWithdrawStateStore({ wTokenContractObj });
 
+    await subscribeConnectedNetwork();
     await subscribeBalance();
   } catch (ex) {
     console.error('Failed to connect to wallet: ', ex.message);
