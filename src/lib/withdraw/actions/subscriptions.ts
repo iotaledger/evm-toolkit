@@ -39,7 +39,7 @@ let connectedNetworkInterval: NodeJS.Timeout | null = null;
 export async function subscribeConnectedNetwork() {
   connectedNetworkInterval = setInterval(async () => {
     if (get(connected) || get(selectedAccount)) {
-      if (Number(get(chainId))?.toString() !== Number(get(selectedNetwork)?.chainID)?.toString()) {
+      if (BigInt(get(chainId)) !== BigInt(get(selectedNetwork)?.chainID)) {
         try {
           await disconnectWallet();
         } catch (e) {
@@ -58,8 +58,4 @@ export async function unsubscribeConnectedNetwork() {
   if (connectedNetworkInterval) {
     clearInterval(connectedNetworkInterval);
   }
-}
-
-function big(arg0: number): any {
-  throw new Error('Function not implemented.');
 }
