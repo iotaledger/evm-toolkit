@@ -28,8 +28,13 @@ export async function addSelectedNetworkToMetamask(): Promise<void> {
                 });
             }
             catch (ex) {
-                console.error(ex?.message);
-                throw new Error(ex?.message);
+                // hotfix: ignore random metamask error https://github.com/MetaMask/metamask-extension/issues/31464#issuecomment-2771409773
+                if(ex?.code === -32603) {
+                    return;
+                } else {
+                    console.error(ex);
+                    throw new Error(ex?.message);
+                }
             }
         } else {
             showNotification({
