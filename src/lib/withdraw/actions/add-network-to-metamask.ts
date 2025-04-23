@@ -17,8 +17,8 @@ export async function addSelectedNetworkToMetamask(): Promise<void> {
                             chainId: `0x${$selectedNetwork.chainID?.toString(16)}`,
                             chainName: $selectedNetwork.text,
                             nativeCurrency: {
-                            name: get(appConfiguration).ticker,
-                            symbol: get(appConfiguration).ticker,
+                                name: get(appConfiguration).ticker,
+                                symbol: get(appConfiguration).ticker,
                                 decimals: L2_NATIVE_GAS_TOKEN_DECIMALS,
                             },
                             ...($selectedNetwork.networkUrl && { rpcUrls: [$selectedNetwork.networkUrl] }),
@@ -27,9 +27,16 @@ export async function addSelectedNetworkToMetamask(): Promise<void> {
                     ],
                 });
             }
-            catch (ex) {
-                console.error(ex?.message);
-                throw new Error(ex?.message);
+            catch (error) {
+                if (error.message.includes('is not a function')) {
+                    /**
+                     * MetaMask v12.14.2 introduced bug with switching networks. Since it succeeds, we still change the text to mark this as successful.
+                     * @see https://github.com/MetaMask/metamask-extension/issues/31464
+                     */
+                } else {
+                    console.error(error);
+                    throw new Error(error?.message);
+                }
             }
         } else {
             showNotification({
