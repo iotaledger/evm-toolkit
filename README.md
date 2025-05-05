@@ -6,6 +6,15 @@
     <a href="https://github.com/iotaledger/template">
         <img src="banner.png" alt="Banner">
     </a>
+    <br />
+    <br />
+    <div>
+      <h3>⚠️ Deprecated Repository</h3>
+      <p> The IOTA Foundation will no longer actively maintain this repository.</p>
+      <p>For the IOTA Network it has been deprecated in favor of the new <a href="https://github.com/iotaledger/iota-evm-bridge">IOTA EVM Bridge</a></p>
+      <p>For the Shimmer Network, while ongoing development is not planned, we welcome community contributions.</p>
+    </div>
+    <hr />
     <h3 align="center">EVM Toolkit</h3>
     <p align="center">
         A frontend based on Svelte, which allows faucet requests and withdraws of the users assets over the JSON RPC of Wasp. 
